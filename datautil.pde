@@ -14,21 +14,22 @@ final int CLASS_SEM_INDEX = 0;
 final int CLASS_YEAR_INDEX = 1;
 final int CLASS_ID_INDEX = 2;
 final int CLASS_SECTION_INDEX = 3;
-final int INSTRUCTOR_NAME_INDEX = 4;
-final int INSTRUCTOR_GROUP_INDEX = 5;
-final int FORMS_REQUESTED_INDEX = 6;
-final int FORMS_RETURNED_INDEX = 7;
-final int COURSE_OVERALL_INDEX = 8;
-final int INSTRUCTOR_OVERALL_INDEX = 9;
-final int PRIOR_INTEREST_INDEX = 10;
-final int INSTRUCTOR_EFFECTIVENESS_INDEX = 11;
-final int AVAILABILITY_INDEX = 12;
-final int CHALLENGE_INDEX = 13;
-final int AMOUNT_LEARNED_INDEX = 14;
-final int INSTRUCTOR_RESPECT_INDEX = 15;
-final int CLASS_NAME_INDEX = 16;
-final int MIN_HOURS_WEEK_INDEX = 17;
-final int AVG_HOURS_WEEK_INDEX = 18;
+final int INSTRUCTOR_FIRST_NAME_INDEX = 4;
+final int INSTRUCTOR_LAST_NAME_INDEX = 5;
+final int INSTRUCTOR_GROUP_INDEX = 6;
+final int FORMS_REQUESTED_INDEX = 7;
+final int FORMS_RETURNED_INDEX = 8;
+final int COURSE_OVERALL_INDEX = 9;
+final int INSTRUCTOR_OVERALL_INDEX = 10;
+final int PRIOR_INTEREST_INDEX = 11;
+final int INSTRUCTOR_EFFECTIVENESS_INDEX = 12;
+final int AVAILABILITY_INDEX = 13;
+final int CHALLENGE_INDEX = 14;
+final int AMOUNT_LEARNED_INDEX = 15;
+final int INSTRUCTOR_RESPECT_INDEX = 16;
+final int CLASS_NAME_INDEX = 17;
+final int MIN_HOURS_WEEK_INDEX = 18;
+final int AVG_HOURS_WEEK_INDEX = 20;
 final int MAX_HOURS_WEEK_INDEX = 19;
 
 // Data support
@@ -36,7 +37,7 @@ int semesterStrToInt(String name)
 {
     if(name.equals(SPRING_STR))
         return SPRING_INT;
-    else if(name.equals(SPRING_STR))
+    else if(name.equals(SUMMER_STR))
         return SUMMER_INT;
     else if(name.equals(FALL_STR))
         return FALL_INT;
@@ -51,7 +52,7 @@ int semesterAndYearToSemesterID(int targetYear, int targetSemester)
 
 int classIDToCategory(String classID)
 {
-    return new Integer(classID.charAt(classID.length() - 1));
+    return new Integer(classID.substring(classID.length() - 1, classID.length()));
 }
 
 CourseRecord courseRecordFromLine(String targetLine)
@@ -61,7 +62,8 @@ CourseRecord courseRecordFromLine(String targetLine)
     String semester = components[CLASS_SEM_INDEX];
     String className = components[CLASS_NAME_INDEX];
     int targetYear = new Integer(components[CLASS_YEAR_INDEX]);
-    String instructor = components[INSTRUCTOR_NAME_INDEX];
+    String instructor = components[INSTRUCTOR_FIRST_NAME_INDEX] + "," +
+        components[INSTRUCTOR_LAST_NAME_INDEX];
     int formsRequested = new Integer(components[FORMS_REQUESTED_INDEX]);
     int formsReturned = new Integer(components[FORMS_RETURNED_INDEX]);
     float courseOverall = new Float(components[COURSE_OVERALL_INDEX]);
@@ -153,22 +155,27 @@ float getValueInDistribution(List<Float> target, float index)
     else
     {
         int closestIndex = (int)Math.floor(index);
-        float sum = target.get(closestIndex) + target.get(closestIndex + 1);
-        return sum / 2;
+        float m = target.get(closestIndex + 1) - target.get(closestIndex);
+        return m * (index - closestIndex) + target.get(closestIndex);
     }
 }
 
-Distribution getDistribtion(List<Float> target)
+Distribution getDistribution(List<Float> target)
 {
     Collections.sort(target);
-    float q1Index = target.size() / 4.0;
-    float q2Index = q1Index * 2;
-    float q3Index = q1Index * 3;
+
+    float q1Index;
+    float q2Index;
+    float q3Index;
+    
+    q1Index = (target.size() + 1) / 4.0;
+    q2Index = (target.size() + 1) / 2.0;
+    q3Index = (target.size() + 1) / 4.0 * 3;
 
     return new Distribution(
-        getValueInDistribution(target, q1Index),
-        getValueInDistribution(target, q2Index),
-        getValueInDistribution(target, q3Index)
+        getValueInDistribution(target, q1Index - 1),
+        getValueInDistribution(target, q2Index - 1),
+        getValueInDistribution(target, q3Index - 1)
     );
 }
 
@@ -183,55 +190,55 @@ List<Float> getRecordValues(List<CourseRecord> targetList, int attrID)
 CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
     String instructor, int courseCategory)
 {
-    Distribution formsRequestedDist = getDistribtion(
+    Distribution formsRequestedDist = getDistribution(
         getRecordValues(target, FORMS_REQUESTED_INDEX)
     );
 
-    Distribution formsReturnedDist = getDistribtion(
+    Distribution formsReturnedDist = getDistribution(
         getRecordValues(target, FORMS_RETURNED_INDEX)
     );
 
-    Distribution courseOverallDist = getDistribtion(
+    Distribution courseOverallDist = getDistribution(
         getRecordValues(target, COURSE_OVERALL_INDEX)
     );
 
-    Distribution instructorOverallDist = getDistribtion(
+    Distribution instructorOverallDist = getDistribution(
         getRecordValues(target, INSTRUCTOR_OVERALL_INDEX)
     );
 
-    Distribution minHoursWeekDist = getDistribtion(
+    Distribution minHoursWeekDist = getDistribution(
         getRecordValues(target, MIN_HOURS_WEEK_INDEX)
     );
 
-    Distribution avgHoursWeekDist = getDistribtion(
+    Distribution avgHoursWeekDist = getDistribution(
         getRecordValues(target, AVG_HOURS_WEEK_INDEX)
     );
 
-    Distribution maxHoursWeekDist = getDistribtion(
+    Distribution maxHoursWeekDist = getDistribution(
         getRecordValues(target, MAX_HOURS_WEEK_INDEX)
     );
 
-    Distribution priorInterestDist = getDistribtion(
+    Distribution priorInterestDist = getDistribution(
         getRecordValues(target, PRIOR_INTEREST_INDEX)
     );
 
-    Distribution instructorEffectivenessDist = getDistribtion(
+    Distribution instructorEffectivenessDist = getDistribution(
         getRecordValues(target, INSTRUCTOR_EFFECTIVENESS_INDEX)
     );
 
-    Distribution availabilityDist = getDistribtion(
+    Distribution availabilityDist = getDistribution(
         getRecordValues(target, AVAILABILITY_INDEX)
     );
 
-    Distribution challengeDist = getDistribtion(
+    Distribution challengeDist = getDistribution(
         getRecordValues(target, CHALLENGE_INDEX)
     );
 
-    Distribution amountLearnedDist = getDistribtion(
+    Distribution amountLearnedDist = getDistribution(
         getRecordValues(target, AMOUNT_LEARNED_INDEX)
     );
 
-    Distribution respectDist = getDistribtion(
+    Distribution respectDist = getDistribution(
         getRecordValues(target, INSTRUCTOR_RESPECT_INDEX)
     );
 

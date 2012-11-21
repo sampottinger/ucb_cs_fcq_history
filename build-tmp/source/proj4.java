@@ -97,7 +97,7 @@ class CourseRecord
         courseOverall = newCourseOverall;
         instructorOverall = newInstructorOverall;
         minHoursWeek = newMinHoursWeek;
-        avgHoursWee = newAvgHoursWee;
+        avgHoursWee = newAvgHoursWeek;
         maxHoursWeek = newMaxHoursWeek;
         priorInterest = newPriorInterest;
         availability = newAvailability;
@@ -149,7 +149,7 @@ class CourseRecord
         return minHoursWeek;
     }
 
-    public float getAvgHoursWee()
+    public float getAvgHoursWeek()
     {
         return avgHoursWee;
     }
@@ -187,6 +187,11 @@ class CourseRecord
     public int getCourseCategory()
     {
         return courseCategory;
+    }
+    
+    public float getInstructorEffectiveness()
+    {
+        return instructorEffectiveness;
     }
 
     public float getNumericalAttr(int id)
@@ -235,7 +240,7 @@ class CourseSummary
     private CourseRecord secondQuartile;
     private CourseRecord thirdQuartile;
 
-    public CourseSetSummary(CourseRecord newFirstQuartile,
+    public CourseSummary(CourseRecord newFirstQuartile,
         CourseRecord newSecondQuartile, CourseRecord newThirdQuartile)
     {
         firstQuartile = newFirstQuartile;
@@ -304,7 +309,7 @@ class SummarizedDataSet
     public void addSummary(int semesterID, int category, CourseSummary summary)
     {
         if(!categoryMap.containsKey(category))
-            categoryMap.put(new HashMap<Integer, CourseSummary>());
+            categoryMap.put(category, new HashMap<Integer, CourseSummary>());
         Map<Integer, CourseSummary> semesterMap = categoryMap.get(category);
         semesterMap.put(semesterID, summary);
     }
@@ -319,6 +324,11 @@ public void testData()
     test_classIDToCategory();
     test_courseRecordFromLine();
     test_sortRecordsBySemester();
+    test_floatIsInteger();
+    test_getValueInDistribution();
+    test_getDistribution();
+    test_getRecordValues();
+    test_getNumericalAttr();
 }
 
 public void test_classIDToCategory()
@@ -332,17 +342,17 @@ public void test_classIDToCategory()
 
 public void test_courseRecordFromLine()
 {
-    String testInput = "Spr,11,CSCI 1240,1,\"EISENBERG, MICHAEL\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,COMPUTATIONAL WORLD,4,6,5"
+    String testInput = "Spr,11,CSCI 1240,1,\"EISENBERG, MICHAEL\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,COMPUTATIONAL WORLD,4,6,5";
     CourseRecord record = courseRecordFromLine(testInput);
 
     assert record.getSemesterID() == 33;
-    assert record.getInstructor() == "\"EISENBERG, MICHAEL\"";
+    assert record.getInstructor().equals("\"EISENBERG, MICHAEL\"");
     assert record.getFormsRequested() == 33;
     assert record.getFormsReturned() == 26;
     assert record.getCourseOverall() == 4.8f;
     assert record.getInstructorOverall() == 5.4f;
     assert record.getMinHoursWeek() == 4;
-    assert record.getAvgHoursWeed() == 5;
+    assert record.getAvgHoursWeek() == 5;
     assert record.getMaxHoursWeek() == 6;
     assert record.getPriorInterest() == 4.3f;
     assert record.getInstructorEffectiveness() == 5.0f;
@@ -366,43 +376,177 @@ public void test_sortRecordsBySemester()
 {
     List<CourseRecord> records = new ArrayList<CourseRecord>();
     records.add(
-        courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 1,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Spr,11,CSCI 1241,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Spr,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 2,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Sum,11,CSCI 1242,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Sum,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 3,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Sum,11,CSCI 1243,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Sum,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 4,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Fall,11,CSCI 1244,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Fall,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 5,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Fall,11,CSCI 1245,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Fall,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 6,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Spr,12,CSCI 1246,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Spr,12,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 7,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Spr,12,CSCI 1247,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Spr,12,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 8,4,6,5")
     );
 
     Map<Integer, List<CourseRecord>> semesterRecords = sortRecordsBySemester(records);
 
-    List<CourseRecord> testList = semesterRecord.get(33);
-    assert checkPair(testList, "CSCI 1240", "CSCI 1241");
+    List<CourseRecord> testList = semesterRecords.get(33);
+    assert checkPair(testList, "SOMETHING 1", "SOMETHING 2");
 
-    List<CourseRecord> testList = semesterRecord.get(34);
-    assert checkPair(testList, "CSCI 1242", "CSCI 1243");
+    testList = semesterRecords.get(34);
+    assert checkPair(testList, "SOMETHING 3", "SOMETHING 4");
 
-    List<CourseRecord> testList = semesterRecord.get(35);
-    assert checkPair(testList, "CSCI 1244", "CSCI 1245");
+    testList = semesterRecords.get(35);
+    assert checkPair(testList, "SOMETHING 5", "SOMETHING 6");
 
-    List<CourseRecord> testList = semesterRecord.get(36);
-    assert checkPair(testList, "CSCI 1246", "CSCI 1247");
+    testList = semesterRecords.get(36);
+    assert checkPair(testList, "SOMETHING 7", "SOMETHING 8");
+}
+
+public void test_sortRecordsByCategory()
+{
+    List<CourseRecord> records = new ArrayList<CourseRecord>();
+    records.add(
+        courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 1,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Spr,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 2,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Sum,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 3,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Sum,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 4,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Fall,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 5,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Fall,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 6,4,6,5")
+    );
+
+    Map<Integer, List<CourseRecord>> categoryRecords = sortRecordsByCategory(records);
+
+    List<CourseRecord> testList = categoryRecords.get(0);
+    assert checkPair(testList, "SOMETHING 1", "SOMETHING 4");
+
+    testList = categoryRecords.get(1);
+    assert checkPair(testList, "SOMETHING 2", "SOMETHING 5");
+
+    testList = categoryRecords.get(2);
+    assert checkPair(testList, "SOMETHING 3", "SOMETHING 6");
+}
+
+public void test_floatIsInteger()
+{
+    assert floatIsInteger(5) == true;
+    assert floatIsInteger(5.5f) == false;
+}
+
+public void test_getValueInDistribution()
+{
+    ArrayList<Float> testList1 = new ArrayList<Float>();
+    testList1.add(2.0f);
+    testList1.add(5.0f);
+    testList1.add(6.0f);
+    assert getValueInDistribution(testList1, 1) == 5;
+
+    ArrayList<Float> testList2 = new ArrayList<Float>();
+    testList2.add(2.0f);
+    testList2.add(5.0f);
+    testList2.add(6.0f);
+    testList2.add(7.0f);
+    testList2.add(9.0f);
+    testList2.add(10.0f);
+    assert getValueInDistribution(testList2, 2.5f) == 6.5f;
+}
+
+public void test_getDistribution()
+{
+    ArrayList<Float> testList = new ArrayList<Float>();
+    testList.add(2.0f);
+    testList.add(5.0f);
+    testList.add(6.0f);
+    testList.add(7.0f);
+    testList.add(9.0f);
+    testList.add(10.0f);
+
+    Distribution distribution = getDistribution(testList);
+    assert distribution.getFirstQuartile() == 4.25f;
+    assert distribution.getSecondQuartile() == 6.5f;
+    assert distribution.getThirdQuartile() == 9.25f;
+
+    testList.add(11.0f);
+    distribution = getDistribution(testList);
+    assert distribution.getFirstQuartile() == 5;
+    assert distribution.getSecondQuartile() == 7;
+    assert distribution.getThirdQuartile() == 10;
+}
+
+public void test_getRecordValues()
+{
+    List<CourseRecord> records = new ArrayList<CourseRecord>();
+    records.add(
+        courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 1,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Spr,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.9,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 2,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Sum,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,5.0,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 3,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Sum,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,5.2,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 4,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Fall,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,5.4,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 5,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Fall,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,5.6,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 6,4,6,5")
+    );
+
+    List<Float> overallScores = getRecordValues(records,
+        COURSE_OVERALL_PROP_ID);
+
+    assert overallScores.get(0) == 4.8f;
+    assert overallScores.get(1) == 4.9f;
+    assert overallScores.get(2) == 5.0f;
+    assert overallScores.get(3) == 5.2f;
+    assert overallScores.get(4) == 5.4f;
+    assert overallScores.get(5) == 5.6f;
+}
+
+public void test_getNumericalAttr()
+{
+    CourseRecord record = courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 1,4,6,5");
+
+    assert record.getNumericalAttr(CLASS_SEMESTER_ID_PROP_ID) == 33;
+    assert record.getNumericalAttr(FORMS_REQUESTED_PROP_ID) == 33;
+    assert record.getNumericalAttr(FORMS_RETURNED_PROP_ID) == 26;
+    assert record.getNumericalAttr(COURSE_OVERALL_PROP_ID) == 4.8f;
+    assert record.getNumericalAttr(INSTRUCTOR_OVERALL_PROP_ID) == 5.4f;
+    assert record.getNumericalAttr(MIN_HOURS_WEEK_PROP_ID) == 4;
+    assert record.getNumericalAttr(AVG_HOURS_WEEK_PROP_ID) == 5;
+    assert record.getNumericalAttr(MAX_HOURS_WEEK_PROP_ID) == 6;
+    assert record.getNumericalAttr(PRIOR_INTEREST_PROP_ID) == 4.3f;
+    assert record.getNumericalAttr(INSTRUCTOR_EFFECTIVENESS_PROP_ID) == 5.0f;
+    assert record.getNumericalAttr(AVAILABILITY_PROP_ID) == 5.0f;
+    assert record.getNumericalAttr(CHALLENGE_PROP_ID) == 4.1f;
+    assert record.getNumericalAttr(AMOUNT_LEARNED_PROP_ID) == 4.3f;
+    assert record.getNumericalAttr(RESPECT_PROP_ID) == 5.9f;
+    assert record.getNumericalAttr(COURSE_CATEGORY_PROP_ID) == 0;
 }
 // Semester mapping
 final int SPRING_INT = 0;
@@ -420,21 +564,22 @@ final int CLASS_SEM_INDEX = 0;
 final int CLASS_YEAR_INDEX = 1;
 final int CLASS_ID_INDEX = 2;
 final int CLASS_SECTION_INDEX = 3;
-final int INSTRUCTOR_NAME_INDEX = 4;
-final int INSTRUCTOR_GROUP_INDEX = 5;
-final int FORMS_REQUESTED_INDEX = 6;
-final int FORMS_RETURNED_INDEX = 7;
-final int COURSE_OVERALL_INDEX = 8;
-final int INSTRUCTOR_OVERALL_INDEX = 9;
-final int PRIOR_INTEREST_INDEX = 10;
-final int INSTRUCTOR_EFFECTIVENESS_INDEX = 11;
-final int AVAILABILITY_INDEX = 12;
-final int CHALLENGE_INDEX = 13;
-final int AMOUNT_LEARNED_INDEX = 14;
-final int INSTRUCTOR_RESPECT_INDEX = 15;
-final String CLASS_NAME_INDEX = 16;
-final int MIN_HOURS_WEEK_INDEX = 17;
-final int AVG_HOURS_WEEK_INDEX = 18;
+final int INSTRUCTOR_FIRST_NAME_INDEX = 4;
+final int INSTRUCTOR_LAST_NAME_INDEX = 5;
+final int INSTRUCTOR_GROUP_INDEX = 6;
+final int FORMS_REQUESTED_INDEX = 7;
+final int FORMS_RETURNED_INDEX = 8;
+final int COURSE_OVERALL_INDEX = 9;
+final int INSTRUCTOR_OVERALL_INDEX = 10;
+final int PRIOR_INTEREST_INDEX = 11;
+final int INSTRUCTOR_EFFECTIVENESS_INDEX = 12;
+final int AVAILABILITY_INDEX = 13;
+final int CHALLENGE_INDEX = 14;
+final int AMOUNT_LEARNED_INDEX = 15;
+final int INSTRUCTOR_RESPECT_INDEX = 16;
+final int CLASS_NAME_INDEX = 17;
+final int MIN_HOURS_WEEK_INDEX = 18;
+final int AVG_HOURS_WEEK_INDEX = 20;
 final int MAX_HOURS_WEEK_INDEX = 19;
 
 // Data support
@@ -442,7 +587,7 @@ public int semesterStrToInt(String name)
 {
     if(name.equals(SPRING_STR))
         return SPRING_INT;
-    else if(name.equals(SPRING_STR))
+    else if(name.equals(SUMMER_STR))
         return SUMMER_INT;
     else if(name.equals(FALL_STR))
         return FALL_INT;
@@ -457,7 +602,7 @@ public int semesterAndYearToSemesterID(int targetYear, int targetSemester)
 
 public int classIDToCategory(String classID)
 {
-    return new Integer(classID.charAt(classID.length() - 1));
+    return new Integer(classID.substring(classID.length() - 1, classID.length()));
 }
 
 public CourseRecord courseRecordFromLine(String targetLine)
@@ -467,7 +612,8 @@ public CourseRecord courseRecordFromLine(String targetLine)
     String semester = components[CLASS_SEM_INDEX];
     String className = components[CLASS_NAME_INDEX];
     int targetYear = new Integer(components[CLASS_YEAR_INDEX]);
-    String instructor = components[INSTRUCTOR_NAME_INDEX];
+    String instructor = components[INSTRUCTOR_FIRST_NAME_INDEX] + "," +
+        components[INSTRUCTOR_LAST_NAME_INDEX];
     int formsRequested = new Integer(components[FORMS_REQUESTED_INDEX]);
     int formsReturned = new Integer(components[FORMS_RETURNED_INDEX]);
     float courseOverall = new Float(components[COURSE_OVERALL_INDEX]);
@@ -512,7 +658,7 @@ public CourseRecord courseRecordFromLine(String targetLine)
 public Map<Integer, List<CourseRecord>> sortRecordsBySemester(List<CourseRecord> targetList)
 {
     Map<Integer, List<CourseRecord>> retMap =
-        new HashMap<Integer, CourseRecord>();
+        new HashMap<Integer, List<CourseRecord>>();
     int targetListSize = targetList.size();
 
     for(CourseRecord target : targetList)
@@ -524,12 +670,14 @@ public Map<Integer, List<CourseRecord>> sortRecordsBySemester(List<CourseRecord>
 
         retMap.get(semID).add(target);
     }
+    
+    return retMap;
 }
 
-public Map<Integer, CourseRecord> sortRecordsByCategory(List<CourseRecord> targetList)
+public Map<Integer, List<CourseRecord>> sortRecordsByCategory(List<CourseRecord> targetList)
 {
     Map<Integer, List<CourseRecord>> retMap =
-        new HashMap<Integer, CourseRecord>();
+        new HashMap<Integer, List<CourseRecord>>();
     int targetListSize = targetList.size();
 
     for(CourseRecord target : targetList)
@@ -541,42 +689,49 @@ public Map<Integer, CourseRecord> sortRecordsByCategory(List<CourseRecord> targe
 
         retMap.get(category).add(target);
     }
+    
+    return retMap;
 }
 
 public boolean floatIsInteger(float target)
 {
-    return index == Math.floor(index);
+    return target == Math.floor(target);
 }
 
 public float getValueInDistribution(List<Float> target, float index)
 {
     if(floatIsInteger(index))
-        return target.get(index);
+        return target.get((int)index);
     else
     {
-        int closestIndex = Math.floor(index);
-        float sum = target.get(closestIndex) + target.get(closestIndex + 1);
-        return sum / 2;
+        int closestIndex = (int)Math.floor(index);
+        float m = target.get(closestIndex + 1) - target.get(closestIndex);
+        return m * (index - closestIndex) + target.get(closestIndex);
     }
 }
 
-public Distribution getDistribtion(List<Float> target)
+public Distribution getDistribution(List<Float> target)
 {
     Collections.sort(target);
-    float q1Index = target.size() / 4.0f;
-    float q2Index = q1Index * 2;
-    float q3Index = q1Index * 3;
+
+    float q1Index;
+    float q2Index;
+    float q3Index;
+    
+    q1Index = (target.size() + 1) / 4.0f;
+    q2Index = (target.size() + 1) / 2.0f;
+    q3Index = (target.size() + 1) / 4.0f * 3;
 
     return new Distribution(
-        getValueInDistribution(target, q1Index),
-        getValueInDistribution(target, q2Index),
-        getValueInDistribution(target, q3Index)
+        getValueInDistribution(target, q1Index - 1),
+        getValueInDistribution(target, q2Index - 1),
+        getValueInDistribution(target, q3Index - 1)
     );
 }
 
 public List<Float> getRecordValues(List<CourseRecord> targetList, int attrID)
 {
-    List<Float> retList = new ArrayList<Float>(target.size());
+    List<Float> retList = new ArrayList<Float>(targetList.size());
     for(CourseRecord target : targetList)
         retList.add(target.getNumericalAttr(attrID));
     return retList;
@@ -585,55 +740,55 @@ public List<Float> getRecordValues(List<CourseRecord> targetList, int attrID)
 public CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
     String instructor, int courseCategory)
 {
-    Distribution formsRequestedDist = getDistribtion(
+    Distribution formsRequestedDist = getDistribution(
         getRecordValues(target, FORMS_REQUESTED_INDEX)
     );
 
-    Distribution formsReturnedDist = getDistribtion(
+    Distribution formsReturnedDist = getDistribution(
         getRecordValues(target, FORMS_RETURNED_INDEX)
     );
 
-    Distribution courseOverallDist = getDistribtion(
+    Distribution courseOverallDist = getDistribution(
         getRecordValues(target, COURSE_OVERALL_INDEX)
     );
 
-    Distribution instructorOverallDist = getDistribtion(
+    Distribution instructorOverallDist = getDistribution(
         getRecordValues(target, INSTRUCTOR_OVERALL_INDEX)
     );
 
-    Distribution minHoursWeekDist = getDistribtion(
+    Distribution minHoursWeekDist = getDistribution(
         getRecordValues(target, MIN_HOURS_WEEK_INDEX)
     );
 
-    Distribution avgHoursWeekDist = getDistribtion(
+    Distribution avgHoursWeekDist = getDistribution(
         getRecordValues(target, AVG_HOURS_WEEK_INDEX)
     );
 
-    Distribution maxHoursWeekDist = getDistribtion(
+    Distribution maxHoursWeekDist = getDistribution(
         getRecordValues(target, MAX_HOURS_WEEK_INDEX)
     );
 
-    Distribution priorInterestDist = getDistribtion(
+    Distribution priorInterestDist = getDistribution(
         getRecordValues(target, PRIOR_INTEREST_INDEX)
     );
 
-    Distribution instructorEffectivenessDist = getDistribtion(
+    Distribution instructorEffectivenessDist = getDistribution(
         getRecordValues(target, INSTRUCTOR_EFFECTIVENESS_INDEX)
     );
 
-    Distribution availabilityDist = getDistribtion(
+    Distribution availabilityDist = getDistribution(
         getRecordValues(target, AVAILABILITY_INDEX)
     );
 
-    Distribution challengeDist = getDistribtion(
+    Distribution challengeDist = getDistribution(
         getRecordValues(target, CHALLENGE_INDEX)
     );
 
-    Distribution amountLearnedDist = getDistribtion(
+    Distribution amountLearnedDist = getDistribution(
         getRecordValues(target, AMOUNT_LEARNED_INDEX)
     );
 
-    Distribution respectDist = getDistribtion(
+    Distribution respectDist = getDistribution(
         getRecordValues(target, INSTRUCTOR_RESPECT_INDEX)
     );
 
@@ -701,9 +856,9 @@ public CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
 }
 
 public SummarizedDataSet summarizeSemesters(
-    Map<Integer, CourseRecord> coursesBySemester)
+    Map<Integer, List<CourseRecord>> coursesBySemester)
 {
-    FCQDataSet dataSet = new FCQDataSet();
+    SummarizedDataSet dataSet = new SummarizedDataSet();
 
     for(Integer semID : coursesBySemester.keySet())
     {
@@ -711,7 +866,7 @@ public SummarizedDataSet summarizeSemesters(
         Map<Integer, List<CourseRecord>> coursesByCategory =
             sortRecordsByCategory(semCourses);
 
-        for(Integer category : coursesByCategory)
+        for(Integer category : coursesByCategory.keySet())
         {
             CourseSummary summary = getCourseSummary(
                 coursesByCategory.get(category),

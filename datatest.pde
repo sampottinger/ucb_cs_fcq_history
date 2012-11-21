@@ -3,6 +3,11 @@ public void testData()
     test_classIDToCategory();
     test_courseRecordFromLine();
     test_sortRecordsBySemester();
+    test_floatIsInteger();
+    test_getValueInDistribution();
+    test_getDistribution();
+    test_getRecordValues();
+    test_getNumericalAttr();
 }
 
 public void test_classIDToCategory()
@@ -20,7 +25,7 @@ public void test_courseRecordFromLine()
     CourseRecord record = courseRecordFromLine(testInput);
 
     assert record.getSemesterID() == 33;
-    assert record.getInstructor() == "\"EISENBERG, MICHAEL\"";
+    assert record.getInstructor().equals("\"EISENBERG, MICHAEL\"");
     assert record.getFormsRequested() == 33;
     assert record.getFormsReturned() == 26;
     assert record.getCourseOverall() == 4.8;
@@ -50,41 +55,175 @@ public void test_sortRecordsBySemester()
 {
     List<CourseRecord> records = new ArrayList<CourseRecord>();
     records.add(
-        courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 1,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Spr,11,CSCI 1241,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Spr,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 2,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Sum,11,CSCI 1242,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Sum,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 3,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Sum,11,CSCI 1243,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Sum,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 4,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Fall,11,CSCI 1244,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Fall,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 5,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Fall,11,CSCI 1245,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Fall,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 6,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Spr,12,CSCI 1246,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Spr,12,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 7,4,6,5")
     );
     records.add(
-        courseRecordFromLine("Spr,12,CSCI 1247,1,\"INST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING,4,6,5")
+        courseRecordFromLine("Spr,12,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 8,4,6,5")
     );
 
     Map<Integer, List<CourseRecord>> semesterRecords = sortRecordsBySemester(records);
 
     List<CourseRecord> testList = semesterRecords.get(33);
-    assert checkPair(testList, "CSCI 1240", "CSCI 1241");
+    assert checkPair(testList, "SOMETHING 1", "SOMETHING 2");
 
     testList = semesterRecords.get(34);
-    assert checkPair(testList, "CSCI 1242", "CSCI 1243");
+    assert checkPair(testList, "SOMETHING 3", "SOMETHING 4");
 
     testList = semesterRecords.get(35);
-    assert checkPair(testList, "CSCI 1244", "CSCI 1245");
+    assert checkPair(testList, "SOMETHING 5", "SOMETHING 6");
 
     testList = semesterRecords.get(36);
-    assert checkPair(testList, "CSCI 1246", "CSCI 1247");
+    assert checkPair(testList, "SOMETHING 7", "SOMETHING 8");
+}
+
+public void test_sortRecordsByCategory()
+{
+    List<CourseRecord> records = new ArrayList<CourseRecord>();
+    records.add(
+        courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 1,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Spr,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 2,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Sum,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 3,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Sum,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 4,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Fall,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 5,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Fall,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 6,4,6,5")
+    );
+
+    Map<Integer, List<CourseRecord>> categoryRecords = sortRecordsByCategory(records);
+
+    List<CourseRecord> testList = categoryRecords.get(0);
+    assert checkPair(testList, "SOMETHING 1", "SOMETHING 4");
+
+    testList = categoryRecords.get(1);
+    assert checkPair(testList, "SOMETHING 2", "SOMETHING 5");
+
+    testList = categoryRecords.get(2);
+    assert checkPair(testList, "SOMETHING 3", "SOMETHING 6");
+}
+
+public void test_floatIsInteger()
+{
+    assert floatIsInteger(5) == true;
+    assert floatIsInteger(5.5) == false;
+}
+
+public void test_getValueInDistribution()
+{
+    ArrayList<Float> testList1 = new ArrayList<Float>();
+    testList1.add(2.0);
+    testList1.add(5.0);
+    testList1.add(6.0);
+    assert getValueInDistribution(testList1, 1) == 5;
+
+    ArrayList<Float> testList2 = new ArrayList<Float>();
+    testList2.add(2.0);
+    testList2.add(5.0);
+    testList2.add(6.0);
+    testList2.add(7.0);
+    testList2.add(9.0);
+    testList2.add(10.0);
+    assert getValueInDistribution(testList2, 2.5) == 6.5;
+}
+
+public void test_getDistribution()
+{
+    ArrayList<Float> testList = new ArrayList<Float>();
+    testList.add(2.0);
+    testList.add(5.0);
+    testList.add(6.0);
+    testList.add(7.0);
+    testList.add(9.0);
+    testList.add(10.0);
+
+    Distribution distribution = getDistribution(testList);
+    assert distribution.getFirstQuartile() == 4.25;
+    assert distribution.getSecondQuartile() == 6.5;
+    assert distribution.getThirdQuartile() == 9.25;
+
+    testList.add(11.0);
+    distribution = getDistribution(testList);
+    assert distribution.getFirstQuartile() == 5;
+    assert distribution.getSecondQuartile() == 7;
+    assert distribution.getThirdQuartile() == 10;
+}
+
+public void test_getRecordValues()
+{
+    List<CourseRecord> records = new ArrayList<CourseRecord>();
+    records.add(
+        courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 1,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Spr,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,4.9,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 2,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Sum,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,5.0,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 3,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Sum,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,5.2,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 4,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Fall,11,CSCI 1241,1,\"INST, LAST\",TTT,33,26,5.4,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 5,4,6,5")
+    );
+    records.add(
+        courseRecordFromLine("Fall,11,CSCI 1242,1,\"INST, LAST\",TTT,33,26,5.6,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 6,4,6,5")
+    );
+
+    List<Float> overallScores = getRecordValues(records,
+        COURSE_OVERALL_PROP_ID);
+
+    assert overallScores.get(0) == 4.8;
+    assert overallScores.get(1) == 4.9;
+    assert overallScores.get(2) == 5.0;
+    assert overallScores.get(3) == 5.2;
+    assert overallScores.get(4) == 5.4;
+    assert overallScores.get(5) == 5.6;
+}
+
+public void test_getNumericalAttr()
+{
+    CourseRecord record = courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 1,4,6,5");
+
+    assert record.getNumericalAttr(CLASS_SEMESTER_ID_PROP_ID) == 33;
+    assert record.getNumericalAttr(FORMS_REQUESTED_PROP_ID) == 33;
+    assert record.getNumericalAttr(FORMS_RETURNED_PROP_ID) == 26;
+    assert record.getNumericalAttr(COURSE_OVERALL_PROP_ID) == 4.8;
+    assert record.getNumericalAttr(INSTRUCTOR_OVERALL_PROP_ID) == 5.4;
+    assert record.getNumericalAttr(MIN_HOURS_WEEK_PROP_ID) == 4;
+    assert record.getNumericalAttr(AVG_HOURS_WEEK_PROP_ID) == 5;
+    assert record.getNumericalAttr(MAX_HOURS_WEEK_PROP_ID) == 6;
+    assert record.getNumericalAttr(PRIOR_INTEREST_PROP_ID) == 4.3;
+    assert record.getNumericalAttr(INSTRUCTOR_EFFECTIVENESS_PROP_ID) == 5.0;
+    assert record.getNumericalAttr(AVAILABILITY_PROP_ID) == 5.0;
+    assert record.getNumericalAttr(CHALLENGE_PROP_ID) == 4.1;
+    assert record.getNumericalAttr(AMOUNT_LEARNED_PROP_ID) == 4.3;
+    assert record.getNumericalAttr(RESPECT_PROP_ID) == 5.9;
+    assert record.getNumericalAttr(COURSE_CATEGORY_PROP_ID) == 0;
 }
