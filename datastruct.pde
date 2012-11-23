@@ -1,5 +1,6 @@
 // Property numerical IDs
 final int CLASS_SEMESTER_ID_PROP_ID = 0;
+final int FIRST_PROP_ID = CLASS_SEMESTER_ID_PROP_ID;
 final int FORMS_REQUESTED_PROP_ID = 1;
 final int FORMS_RETURNED_PROP_ID = 2;
 final int COURSE_OVERALL_PROP_ID = 3;
@@ -14,6 +15,7 @@ final int CHALLENGE_PROP_ID = 11;
 final int AMOUNT_LEARNED_PROP_ID = 12;
 final int RESPECT_PROP_ID = 13;
 final int COURSE_CATEGORY_PROP_ID = 14;
+final int LAST_PROP_ID = COURSE_CATEGORY_PROP_ID;
 
 class CourseRecord
 {
@@ -284,5 +286,10 @@ class SummarizedDataSet
     public Map<Integer, CourseSummary> getCategory(int category)
     {
         return categoryMap.get(category);
+    }
+
+    public Set<Integer> getCategories()
+    {
+        return categoryMap.keySet();
     }
 };
