@@ -32,8 +32,6 @@ PointSeries courseSummaryToPointSummary(
         float secondY = valueConvFactor * (secondVal - minValue);
         float thirdY = valueConvFactor * (thirdVal - minValue);
 
-        println(String.format("%f : %f", secondVal, secondY));
-
         PVector firstVector = new PVector(x, firstY);
         PVector secondVector = new PVector(x, secondY);
         PVector thirdVector = new PVector(x, thirdY);
