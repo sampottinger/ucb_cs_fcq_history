@@ -31,15 +31,28 @@ class PointSummary
 class PointSeries
 {
     private Map<Integer, PointSummary> pointSummaries;
+    private List<Integer> sortedKeys;
 
     public PointSeries()
     {
         pointSummaries = new HashMap<Integer, PointSummary>();
+        sortedKeys = new ArrayList<Integer>(pointSummaries.keySet());
+        Collections.sort(sortedKeys);
     }
 
     public void addSummary(int semID, PointSummary summary)
     {
         pointSummaries.put(semID, summary);
+    }
+
+    public PointSummary getSummary(int semID)
+    {
+        return pointSummaries.get(semID);
+    }
+
+    public Set<Integer> getSortedKeys()
+    {
+        return pointSummaries.keySet();
     }
 };
 
@@ -56,6 +69,11 @@ class LabeledPointSeriesSet
     {
         pointSeries.put(seriesID, series);
     }
+
+    public PointSeries getSeries(int seriesID)
+    {
+        return pointSeries.get(seriesID);
+    }
 };
 
 class PointDataSet
@@ -70,5 +88,10 @@ class PointDataSet
     public void addSet(int category, LabeledPointSeriesSet newSet)
     {
         seriesSets.put(category, newSet);
+    }
+
+    public LabeledPointSeriesSet getSeriesSet(int categoryID)
+    {
+        return seriesSets.get(categoryID);
     }
 };

@@ -1,27 +1,3 @@
-Float minFloat(Number[] target)
-{
-    Float minVal = (Float)target[0];
-    for(int i=0; i<target.length; i++)
-    {
-        Float curNum = (Float)target[i];
-        if(curNum.compareTo(minVal) < 0)
-            minVal = (Float)target[i];
-    }
-    return minVal;
-}
-
-Float maxFloat(Number[] target)
-{
-    Float maxVal = (Float)target[0];
-    for(int i=0; i<target.length; i++)
-    {
-        Float curNum = (Float)target[i];
-        if(curNum.compareTo(maxVal) > 0)
-            maxVal = (Float)target[i];
-    }
-    return maxVal;
-}
-
 PointSeries courseSummaryToPointSummary(
     Map<Integer, CourseSummary> summaries, int fieldID, int minValue,
     int maxValue, int minKey, int maxKey, int availWidth, int availHeight)
@@ -34,8 +10,8 @@ PointSeries courseSummaryToPointSummary(
     CourseRecord thirdQuartileCourse;
     PointSummary thirdQuartilePoint;
 
-    float keyConvFactor = ((float)(maxKey - minKey)) / availWidth;
-    float valueConvFactor = ((float)(maxValue - minValue)) / availHeight;
+    float keyConvFactor = availWidth / ((float)(maxKey - minKey));
+    float valueConvFactor = availHeight / ((float)(maxValue - minValue));
 
     PointSeries pointSeries = new PointSeries();
     for(Integer semID : summaries.keySet())
@@ -55,6 +31,8 @@ PointSeries courseSummaryToPointSummary(
         float firstY = valueConvFactor * (firstVal - minValue);
         float secondY = valueConvFactor * (secondVal - minValue);
         float thirdY = valueConvFactor * (thirdVal - minValue);
+
+        println(String.format("%f : %f", secondVal, secondY));
 
         PVector firstVector = new PVector(x, firstY);
         PVector secondVector = new PVector(x, secondY);
@@ -178,8 +156,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
     newSeries = courseSummaryToPointSummary(
         summaries,
         MIN_HOURS_WEEK_PROP_ID,
-        1,
-        6,
+        0,
+        16,
         20,
         36,
         availWidth,
@@ -190,8 +168,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
     newSeries = courseSummaryToPointSummary(
         summaries,
         AVG_HOURS_WEEK_PROP_ID,
-        1,
-        6,
+        0,
+        16,
         20,
         36,
         availWidth,
@@ -202,8 +180,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
     newSeries = courseSummaryToPointSummary(
         summaries,
         MAX_HOURS_WEEK_PROP_ID,
-        1,
-        6,
+        0,
+        16,
         20,
         36,
         availWidth,

@@ -148,6 +148,15 @@ boolean floatIsInteger(float target)
     return target == Math.floor(target);
 }
 
+float safeGet(List<Float> target, int index)
+{
+    if(index < 0)
+        index = 0;
+    if(index >= target.size())
+        index = target.size() - 1;
+    return target.get(index);
+}
+
 float getValueInDistribution(List<Float> target, float index)
 {
     if(floatIsInteger(index))
@@ -155,8 +164,8 @@ float getValueInDistribution(List<Float> target, float index)
     else
     {
         int closestIndex = (int)Math.floor(index);
-        float m = target.get(closestIndex + 1) - target.get(closestIndex);
-        return m * (index - closestIndex) + target.get(closestIndex);
+        float m = safeGet(target, closestIndex + 1) - safeGet(target, closestIndex);
+        return m * (index - closestIndex) + safeGet(target, closestIndex);
     }
 }
 
@@ -191,55 +200,55 @@ CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
     String instructor, int courseCategory)
 {
     Distribution formsRequestedDist = getDistribution(
-        getRecordValues(target, FORMS_REQUESTED_INDEX)
+        getRecordValues(target, FORMS_REQUESTED_PROP_ID)
     );
 
     Distribution formsReturnedDist = getDistribution(
-        getRecordValues(target, FORMS_RETURNED_INDEX)
+        getRecordValues(target, FORMS_RETURNED_PROP_ID)
     );
 
     Distribution courseOverallDist = getDistribution(
-        getRecordValues(target, COURSE_OVERALL_INDEX)
+        getRecordValues(target, COURSE_OVERALL_PROP_ID)
     );
 
     Distribution instructorOverallDist = getDistribution(
-        getRecordValues(target, INSTRUCTOR_OVERALL_INDEX)
+        getRecordValues(target, INSTRUCTOR_OVERALL_PROP_ID)
     );
 
     Distribution minHoursWeekDist = getDistribution(
-        getRecordValues(target, MIN_HOURS_WEEK_INDEX)
+        getRecordValues(target, MIN_HOURS_WEEK_PROP_ID)
     );
 
     Distribution avgHoursWeekDist = getDistribution(
-        getRecordValues(target, AVG_HOURS_WEEK_INDEX)
+        getRecordValues(target, AVG_HOURS_WEEK_PROP_ID)
     );
 
     Distribution maxHoursWeekDist = getDistribution(
-        getRecordValues(target, MAX_HOURS_WEEK_INDEX)
+        getRecordValues(target, MAX_HOURS_WEEK_PROP_ID)
     );
 
     Distribution priorInterestDist = getDistribution(
-        getRecordValues(target, PRIOR_INTEREST_INDEX)
+        getRecordValues(target, PRIOR_INTEREST_PROP_ID)
     );
 
     Distribution instructorEffectivenessDist = getDistribution(
-        getRecordValues(target, INSTRUCTOR_EFFECTIVENESS_INDEX)
+        getRecordValues(target, INSTRUCTOR_EFFECTIVENESS_PROP_ID)
     );
 
     Distribution availabilityDist = getDistribution(
-        getRecordValues(target, AVAILABILITY_INDEX)
+        getRecordValues(target, AVAILABILITY_PROP_ID)
     );
 
     Distribution challengeDist = getDistribution(
-        getRecordValues(target, CHALLENGE_INDEX)
+        getRecordValues(target, CHALLENGE_PROP_ID)
     );
 
     Distribution amountLearnedDist = getDistribution(
-        getRecordValues(target, AMOUNT_LEARNED_INDEX)
+        getRecordValues(target, AMOUNT_LEARNED_PROP_ID)
     );
 
     Distribution respectDist = getDistribution(
-        getRecordValues(target, INSTRUCTOR_RESPECT_INDEX)
+        getRecordValues(target, RESPECT_PROP_ID)
     );
 
     CourseRecord firstQuartile = new CourseRecord(

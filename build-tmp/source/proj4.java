@@ -18,18 +18,35 @@ import java.util.regex.*;
 
 public class proj4 extends PApplet {
 
-final String DATA_FILE_LOC = "fcq.csv";
+final String DATA_FILE_LOC = "cs_fcq.csv";
+final int PLOT_WIDTH = 100;
+final int PLOT_HEIGHT = 60;
 
 List<CourseRecord> courseRecords;
 
+PointDataSet pointDataSet;
+Sparkline testSparkline;
+
 public void setup()
 {
-    testData();
+    size(PLOT_WIDTH, PLOT_HEIGHT);
+    SummarizedDataSet summarizedDataSet = getDataSetFromFile(DATA_FILE_LOC);
+    pointDataSet = dataSetToPoints(summarizedDataSet,
+        PLOT_WIDTH, PLOT_HEIGHT);
+    LabeledPointSeriesSet sampleSet = pointDataSet.getSeriesSet(0);
+    PointSeries sampleSeries = sampleSet.getSeries(9);
+    testSparkline = new Sparkline(sampleSeries);
 }
 
 public void draw()
 {
+    noStroke();
+    fill(0xffFFFFFF);
+    rectMode(CORNERS);
+    rect(0, 0, PLOT_WIDTH, PLOT_HEIGHT);
 
+    stroke(0xff000000);
+    testSparkline.draw();
 }
 // Property numerical IDs
 final int CLASS_SEMESTER_ID_PROP_ID = 0;
@@ -705,6 +722,15 @@ public boolean floatIsInteger(float target)
     return target == Math.floor(target);
 }
 
+public float safeGet(List<Float> target, int index)
+{
+    if(index < 0)
+        index = 0;
+    if(index >= target.size())
+        index = target.size() - 1;
+    return target.get(index);
+}
+
 public float getValueInDistribution(List<Float> target, float index)
 {
     if(floatIsInteger(index))
@@ -712,8 +738,8 @@ public float getValueInDistribution(List<Float> target, float index)
     else
     {
         int closestIndex = (int)Math.floor(index);
-        float m = target.get(closestIndex + 1) - target.get(closestIndex);
-        return m * (index - closestIndex) + target.get(closestIndex);
+        float m = safeGet(target, closestIndex + 1) - safeGet(target, closestIndex);
+        return m * (index - closestIndex) + safeGet(target, closestIndex);
     }
 }
 
@@ -748,55 +774,55 @@ public CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
     String instructor, int courseCategory)
 {
     Distribution formsRequestedDist = getDistribution(
-        getRecordValues(target, FORMS_REQUESTED_INDEX)
+        getRecordValues(target, FORMS_REQUESTED_PROP_ID)
     );
 
     Distribution formsReturnedDist = getDistribution(
-        getRecordValues(target, FORMS_RETURNED_INDEX)
+        getRecordValues(target, FORMS_RETURNED_PROP_ID)
     );
 
     Distribution courseOverallDist = getDistribution(
-        getRecordValues(target, COURSE_OVERALL_INDEX)
+        getRecordValues(target, COURSE_OVERALL_PROP_ID)
     );
 
     Distribution instructorOverallDist = getDistribution(
-        getRecordValues(target, INSTRUCTOR_OVERALL_INDEX)
+        getRecordValues(target, INSTRUCTOR_OVERALL_PROP_ID)
     );
 
     Distribution minHoursWeekDist = getDistribution(
-        getRecordValues(target, MIN_HOURS_WEEK_INDEX)
+        getRecordValues(target, MIN_HOURS_WEEK_PROP_ID)
     );
 
     Distribution avgHoursWeekDist = getDistribution(
-        getRecordValues(target, AVG_HOURS_WEEK_INDEX)
+        getRecordValues(target, AVG_HOURS_WEEK_PROP_ID)
     );
 
     Distribution maxHoursWeekDist = getDistribution(
-        getRecordValues(target, MAX_HOURS_WEEK_INDEX)
+        getRecordValues(target, MAX_HOURS_WEEK_PROP_ID)
     );
 
     Distribution priorInterestDist = getDistribution(
-        getRecordValues(target, PRIOR_INTEREST_INDEX)
+        getRecordValues(target, PRIOR_INTEREST_PROP_ID)
     );
 
     Distribution instructorEffectivenessDist = getDistribution(
-        getRecordValues(target, INSTRUCTOR_EFFECTIVENESS_INDEX)
+        getRecordValues(target, INSTRUCTOR_EFFECTIVENESS_PROP_ID)
     );
 
     Distribution availabilityDist = getDistribution(
-        getRecordValues(target, AVAILABILITY_INDEX)
+        getRecordValues(target, AVAILABILITY_PROP_ID)
     );
 
     Distribution challengeDist = getDistribution(
-        getRecordValues(target, CHALLENGE_INDEX)
+        getRecordValues(target, CHALLENGE_PROP_ID)
     );
 
     Distribution amountLearnedDist = getDistribution(
-        getRecordValues(target, AMOUNT_LEARNED_INDEX)
+        getRecordValues(target, AMOUNT_LEARNED_PROP_ID)
     );
 
     Distribution respectDist = getDistribution(
-        getRecordValues(target, INSTRUCTOR_RESPECT_INDEX)
+        getRecordValues(target, RESPECT_PROP_ID)
     );
 
     CourseRecord firstQuartile = new CourseRecord(
@@ -909,6 +935,32 @@ public SummarizedDataSet getDataSetFromFile(String loc)
         sortRecordsBySemester(records);
     return summarizeSemesters(recordsBySemester);
 }
+class Sparkline
+{
+    private PointSeries series;
+
+    public Sparkline(PointSeries newSeries)
+    {
+        series = newSeries;
+    }
+
+    public void draw()
+    {
+        // Set color and other display options
+        strokeWeight(1);
+        noFill();
+        noSmooth();
+
+        // Render centers
+        rectMode(RADIUS);
+        for(Integer semID : series.getSortedKeys())
+        {
+            PointSummary pointSummary = series.getSummary(semID);
+            PVector secondQuartile = pointSummary.getSecondQuartile();
+            rect(secondQuartile.x, secondQuartile.y, 2, 2);
+        }
+    }
+};
 class PointSummary
 {
     private PVector firstQuartile;
@@ -942,15 +994,28 @@ class PointSummary
 class PointSeries
 {
     private Map<Integer, PointSummary> pointSummaries;
+    private List<Integer> sortedKeys;
 
     public PointSeries()
     {
         pointSummaries = new HashMap<Integer, PointSummary>();
+        sortedKeys = new ArrayList<Integer>(pointSummaries.keySet());
+        Collections.sort(sortedKeys);
     }
 
     public void addSummary(int semID, PointSummary summary)
     {
         pointSummaries.put(semID, summary);
+    }
+
+    public PointSummary getSummary(int semID)
+    {
+        return pointSummaries.get(semID);
+    }
+
+    public Set<Integer> getSortedKeys()
+    {
+        return pointSummaries.keySet();
     }
 };
 
@@ -967,6 +1032,11 @@ class LabeledPointSeriesSet
     {
         pointSeries.put(seriesID, series);
     }
+
+    public PointSeries getSeries(int seriesID)
+    {
+        return pointSeries.get(seriesID);
+    }
 };
 
 class PointDataSet
@@ -982,31 +1052,12 @@ class PointDataSet
     {
         seriesSets.put(category, newSet);
     }
+
+    public LabeledPointSeriesSet getSeriesSet(int categoryID)
+    {
+        return seriesSets.get(categoryID);
+    }
 };
-public Float minFloat(Number[] target)
-{
-    Float minVal = (Float)target[0];
-    for(int i=0; i<target.length; i++)
-    {
-        Float curNum = (Float)target[i];
-        if(curNum.compareTo(minVal) < 0)
-            minVal = (Float)target[i];
-    }
-    return minVal;
-}
-
-public Float maxFloat(Number[] target)
-{
-    Float maxVal = (Float)target[0];
-    for(int i=0; i<target.length; i++)
-    {
-        Float curNum = (Float)target[i];
-        if(curNum.compareTo(maxVal) > 0)
-            maxVal = (Float)target[i];
-    }
-    return maxVal;
-}
-
 public PointSeries courseSummaryToPointSummary(
     Map<Integer, CourseSummary> summaries, int fieldID, int minValue,
     int maxValue, int minKey, int maxKey, int availWidth, int availHeight)
@@ -1019,8 +1070,8 @@ public PointSeries courseSummaryToPointSummary(
     CourseRecord thirdQuartileCourse;
     PointSummary thirdQuartilePoint;
 
-    float keyConvFactor = ((float)(maxKey - minKey)) / availWidth;
-    float valueConvFactor = ((float)(maxValue - minValue)) / availHeight;
+    float keyConvFactor = availWidth / ((float)(maxKey - minKey));
+    float valueConvFactor = availHeight / ((float)(maxValue - minValue));
 
     PointSeries pointSeries = new PointSeries();
     for(Integer semID : summaries.keySet())
@@ -1040,6 +1091,8 @@ public PointSeries courseSummaryToPointSummary(
         float firstY = valueConvFactor * (firstVal - minValue);
         float secondY = valueConvFactor * (secondVal - minValue);
         float thirdY = valueConvFactor * (thirdVal - minValue);
+
+        println(String.format("%f : %f", secondVal, secondY));
 
         PVector firstVector = new PVector(x, firstY);
         PVector secondVector = new PVector(x, secondY);
@@ -1163,8 +1216,8 @@ public LabeledPointSeriesSet courseSummaryToPointSeries(
     newSeries = courseSummaryToPointSummary(
         summaries,
         MIN_HOURS_WEEK_PROP_ID,
-        1,
-        6,
+        0,
+        16,
         20,
         36,
         availWidth,
@@ -1175,8 +1228,8 @@ public LabeledPointSeriesSet courseSummaryToPointSeries(
     newSeries = courseSummaryToPointSummary(
         summaries,
         AVG_HOURS_WEEK_PROP_ID,
-        1,
-        6,
+        0,
+        16,
         20,
         36,
         availWidth,
@@ -1187,8 +1240,8 @@ public LabeledPointSeriesSet courseSummaryToPointSeries(
     newSeries = courseSummaryToPointSummary(
         summaries,
         MAX_HOURS_WEEK_PROP_ID,
-        1,
-        6,
+        0,
+        16,
         20,
         36,
         availWidth,
