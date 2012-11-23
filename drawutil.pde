@@ -28,9 +28,9 @@ PointSeries courseSummaryToPointSummary(
         float secondVal = secondQuartileCourse.getNumericalAttr(fieldID);
         float thirdVal = thirdQuartileCourse.getNumericalAttr(fieldID);
 
-        float firstY = valueConvFactor * (firstVal - minValue);
-        float secondY = valueConvFactor * (secondVal - minValue);
-        float thirdY = valueConvFactor * (thirdVal - minValue);
+        float firstY = availHeight - valueConvFactor * (firstVal - minValue);
+        float secondY = availHeight - valueConvFactor * (secondVal - minValue);
+        float thirdY = availHeight - valueConvFactor * (thirdVal - minValue);
 
         PVector firstVector = new PVector(x, firstY);
         PVector secondVector = new PVector(x, secondY);

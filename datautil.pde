@@ -9,6 +9,16 @@ final String SUMMER_STR = "Sum";
 final String FALL_STR = "Fall";
 final String UNKNOWN_SEMESTER_STR = "Unknown";
 
+// Course categories
+final int GENERAL_COMP_SCI_CATEGORY = 0;
+final int AI_CATEGORY = 2;
+final int OS_AND_HARDWARE_CATEGORY = 3;
+final int THEORY_OF_COMPUTATION_CATEGORY = 4;
+final int PROGRAMMING_LANGUAGES_CATEGORY = 5;
+final int NUMERICAL_COMP_CATEGORY = 6;
+final int DATABASE_CATEGORY = 7;
+final int SOFTWARE_ENG_CATEGORY = 8;
+
 // Line parsing constants
 final int CLASS_SEM_INDEX = 0;
 final int CLASS_YEAR_INDEX = 1;
