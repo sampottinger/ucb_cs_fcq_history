@@ -3,6 +3,8 @@ final int SPRING_INT = 0;
 final int SUMMER_INT = 1;
 final int FALL_INT = 2;
 final int NUM_SEMESTERS = 3;
+final int MIN_SEMESTER_ID = 20;
+final int MAX_SEMESTER_ID = 36;
 final int UNKNOWN_SEMESTER_INT = -1;
 final String SPRING_STR = "Spr";
 final String SUMMER_STR = "Sum";
@@ -96,6 +98,7 @@ CourseRecord courseRecordFromLine(String targetLine)
 
     return new CourseRecord(
         semesterID,
+        classID,
         className,
         instructor,
         formsRequested,
@@ -263,6 +266,7 @@ CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
 
     CourseRecord firstQuartile = new CourseRecord(
         semesterID,
+        "",
         "firstQuartile",
         instructor,
         formsRequestedDist.getFirstQuartile(),
@@ -283,6 +287,7 @@ CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
 
     CourseRecord secondQuartile = new CourseRecord(
         semesterID,
+        "",
         "secondQuartile",
         instructor,
         formsRequestedDist.getSecondQuartile(),
@@ -303,6 +308,7 @@ CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
 
     CourseRecord thirdQuartile = new CourseRecord(
         semesterID,
+        "",
         "thirdQuartile",
         instructor,
         formsRequestedDist.getThirdQuartile(),
@@ -321,7 +327,20 @@ CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
         courseCategory
     );
 
-    return new CourseSummary(firstQuartile, secondQuartile, thirdQuartile);
+    int numUgrad = 0;
+    int numGrad = 0;
+    for(CourseRecord record : target)
+    {
+        String classID = record.getClassID();
+        int courseNumber = new Integer(classID.substring(5));
+        if(courseNumber < 5000)
+            numUgrad++;
+        else
+            numGrad++;
+    }
+
+    return new CourseSummary(firstQuartile, secondQuartile, thirdQuartile,
+        numUgrad, numGrad);
 }
 
 SummarizedDataSet summarizeSemesters(

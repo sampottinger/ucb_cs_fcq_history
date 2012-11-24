@@ -21,6 +21,7 @@ class CourseRecord
 {
     // Member attributes
     private int classSemesterID;
+    private String classID;
     private String instructor;
     private String name;
     private float formsRequested;
@@ -41,6 +42,7 @@ class CourseRecord
     // Constructor
     public CourseRecord(
         int newSemesterID,
+        String newClassID,
         String newName,
         String newInstructor,
         float newFormsRequested,
@@ -59,6 +61,7 @@ class CourseRecord
         int newCourseCategory)
     {
         classSemesterID = newSemesterID;
+        classID = newClassID;
         name = newName;
         instructor = newInstructor;
         formsRequested = newFormsRequested;
@@ -81,6 +84,11 @@ class CourseRecord
     public int getSemesterID()
     {
         return classSemesterID;
+    }
+
+    public String getClassID()
+    {
+        return classID;
     }
 
     public String getName()
@@ -208,13 +216,18 @@ class CourseSummary
     private CourseRecord firstQuartile;
     private CourseRecord secondQuartile;
     private CourseRecord thirdQuartile;
+    private int numUndergrad;
+    private int numGrad;
 
     public CourseSummary(CourseRecord newFirstQuartile,
-        CourseRecord newSecondQuartile, CourseRecord newThirdQuartile)
+        CourseRecord newSecondQuartile, CourseRecord newThirdQuartile,
+        int newNumUndergrad, int newNumGrad)
     {
         firstQuartile = newFirstQuartile;
         secondQuartile = newSecondQuartile;
         thirdQuartile = newThirdQuartile;
+        numUndergrad = newNumUndergrad;
+        numGrad = newNumGrad;
     }
 
     public CourseRecord getFirstQuartile()
@@ -230,6 +243,16 @@ class CourseSummary
     public CourseRecord getThirdQuartile()
     {
         return thirdQuartile;
+    }
+
+    public int getNumUndergrad()
+    {
+        return numUndergrad;
+    }
+
+    public int getNumGrad()
+    {
+        return numGrad;
     }
 
 };

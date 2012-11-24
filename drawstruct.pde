@@ -1,3 +1,91 @@
+class Dichotomy
+{
+    private float val1;
+    private float val2;
+
+    public Dichotomy(float newVal1, float newVal2)
+    {
+        val1 = newVal1;
+        val2 = newVal2;
+    }
+
+    public float getVal1()
+    {
+        return val1;
+    }
+
+    public float getVal2()
+    {
+        return val2;
+    }
+};
+
+class DichotomySeries
+{
+    private Map<Integer, Dichotomy> dichotomies;
+    private List<Integer> sortedKeys;
+
+    public DichotomySeries()
+    {
+        dichotomies = new HashMap<Integer, Dichotomy>();
+    }
+
+    public void addDichotomy(int semID, Dichotomy newDichotomy)
+    {
+        dichotomies.put(semID, newDichotomy);
+        sortedKeys = new ArrayList<Integer>(dichotomies.keySet());
+        Collections.sort(sortedKeys);
+    }
+
+    public Collection<Dichotomy> getDichotomies()
+    {
+        return dichotomies.values();
+    }
+
+    public Dichotomy getDichotomy(int semID)
+    {
+        return dichotomies.get(semID);
+    }
+
+    public List<Integer> getSortedKeys()
+    {
+        return sortedKeys;
+    }
+};
+
+class LabeledDichotomySeriesSet
+{
+    private Map<Integer, DichotomySeries> dichotomySets;
+    private List<Integer> sortedKeys;
+
+    public LabeledDichotomySeriesSet()
+    {
+        dichotomySets = new HashMap<Integer, DichotomySeries>();
+    }
+
+    public void addDichotomySeries(int category, DichotomySeries series)
+    {
+        dichotomySets.put(category, series);
+        sortedKeys = new ArrayList<Integer>(dichotomySets.keySet());
+        Collections.sort(sortedKeys);
+    }
+
+    public Collection<DichotomySeries> getSeriesCollection()
+    {
+        return dichotomySets.values();
+    }
+
+    public DichotomySeries getSeries(int category)
+    {
+        return dichotomySets.get(category);
+    }
+
+    public List<Integer> getSortedKeys()
+    {
+        return sortedKeys;
+    }
+};
+
 class PointSummary
 {
     private PVector firstQuartile;
@@ -36,13 +124,13 @@ class PointSeries
     public PointSeries()
     {
         pointSummaries = new HashMap<Integer, PointSummary>();
-        sortedKeys = new ArrayList<Integer>(pointSummaries.keySet());
-        Collections.sort(sortedKeys);
     }
 
     public void addSummary(int semID, PointSummary summary)
     {
         pointSummaries.put(semID, summary);
+        sortedKeys = new ArrayList<Integer>(pointSummaries.keySet());
+        Collections.sort(sortedKeys);
     }
 
     public PointSummary getSummary(int semID)
@@ -50,9 +138,9 @@ class PointSeries
         return pointSummaries.get(semID);
     }
 
-    public Set<Integer> getSortedKeys()
+    public List<Integer> getSortedKeys()
     {
-        return pointSummaries.keySet();
+        return sortedKeys;
     }
 };
 

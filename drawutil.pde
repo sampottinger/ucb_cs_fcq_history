@@ -61,8 +61,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         COURSE_OVERALL_PROP_ID,
         1,
         6,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -73,8 +73,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         INSTRUCTOR_OVERALL_PROP_ID,
         1,
         6,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -85,8 +85,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         PRIOR_INTEREST_PROP_ID,
         1,
         6,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -97,8 +97,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         INSTRUCTOR_EFFECTIVENESS_PROP_ID,
         1,
         6,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -109,8 +109,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         AVAILABILITY_PROP_ID,
         1,
         6,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -121,8 +121,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         CHALLENGE_PROP_ID,
         1,
         6,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight);
     seriesSet.addSeries(CHALLENGE_PROP_ID, newSeries);
@@ -131,8 +131,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         AMOUNT_LEARNED_PROP_ID,
         1,
         6,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -142,8 +142,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         RESPECT_PROP_ID,
         1,
         6,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -156,8 +156,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         MIN_HOURS_WEEK_PROP_ID,
         0,
         16,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -168,8 +168,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         AVG_HOURS_WEEK_PROP_ID,
         0,
         16,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -180,8 +180,8 @@ LabeledPointSeriesSet courseSummaryToPointSeries(
         MAX_HOURS_WEEK_PROP_ID,
         0,
         16,
-        20,
-        36,
+        MIN_SEMESTER_ID,
+        MAX_SEMESTER_ID,
         availWidth,
         availHeight
     );
@@ -203,4 +203,51 @@ PointDataSet dataSetToPoints(SummarizedDataSet origDataSet, int availWidth,
     }
 
     return retPointDataSet;
+}
+
+Dichotomy courseSummaryToDichotomy(CourseSummary summary)
+{
+    return new Dichotomy(summary.getNumUndergrad(), summary.getNumGrad());
+}
+
+DichotomySeries courseSummaryMapToDichotomySeries(
+    Map<Integer, CourseSummary> target)
+{
+    DichotomySeries newSeries = new DichotomySeries();
+    for(Integer semID : target.keySet())
+    {
+        CourseSummary courseSummary = target.get(semID);
+        Dichotomy newDichotomy = courseSummaryToDichotomy(courseSummary);
+        newSeries.addDichotomy(semID, newDichotomy);
+    }
+    return newSeries;
+}
+
+LabeledDichotomySeriesSet dataSetToDichotomySeriesSet(
+    SummarizedDataSet origDataSet)
+{
+    LabeledDichotomySeriesSet retSet = new LabeledDichotomySeriesSet();
+    for(Integer category : origDataSet.getCategories())
+    {
+        DichotomySeries newSet = courseSummaryMapToDichotomySeries(
+            origDataSet.getCategory(category));
+        retSet.addDichotomySeries(category, newSet);
+    }
+    return retSet;
+}
+
+int getMaxClassesInSeriesSet(LabeledDichotomySeriesSet target)
+{
+    int maxFound = 0;
+    for(DichotomySeries series : target.getSeriesCollection())
+    {
+        for(Dichotomy dichotomy : series.getDichotomies())
+        {
+            int curCount = (int)(dichotomy.getVal1() + dichotomy.getVal2());
+            if(curCount > maxFound)
+                maxFound = curCount;
+        }
+    }
+
+    return maxFound;
 }

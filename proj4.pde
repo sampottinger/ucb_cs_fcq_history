@@ -1,16 +1,21 @@
 final String DATA_FILE_LOC = "cs_fcq.csv";
-final int PLOT_WIDTH = 70;
+final int PLOT_WIDTH = 60;
 final int SPARKLINE_HORIZ_PADDING = 10;
 final int PLOT_HEIGHT = 60;
 final int CATEGORY_VERT_PADDING = 10;
 final int WIDTH = 1000;
-final int HEIGHT = 560;
+final int HEIGHT = 570;
 
 List<CourseRecord> courseRecords;
 
 PointDataSet pointDataSet;
 Sparkline testSparkline;
 Map<Integer, List<Sparkline>> sparklines;
+LabeledDichotomySeriesSet populationDichotomySet;
+int maxClassesInSeries;
+List<DichotomyGraph> dichotomyGraphs;
+boolean redrawRequired = true;
+int selectedSemID;
 
 List<Sparkline> prepareSparklinesForCategory(LabeledPointSeriesSet seriesSet)
 {
@@ -107,26 +112,167 @@ HashMap<Integer, List<Sparkline>> prepareSparklines(PointDataSet dataSet)
     return sparklines;
 }
 
+List<DichotomyGraph> prepareDichotomyGraphs(
+    LabeledDichotomySeriesSet populationDichotomySet, int maxClassesInSeries)
+{
+    List<DichotomyGraph> retList = new ArrayList<DichotomyGraph>();
+
+    for(Integer category : populationDichotomySet.getSortedKeys())
+    {
+        DichotomyGraph newStar = new DichotomyGraph(
+            populationDichotomySet.getSeries(category),
+            maxClassesInSeries,
+            30,
+            MIN_SEMESTER_ID,
+            MAX_SEMESTER_ID,
+            50
+        );
+        retList.add(newStar);
+    }
+
+    return retList;
+}
+
 void setup()
 {
     size(WIDTH, HEIGHT);
+    selectedSemID = MIN_SEMESTER_ID;
     SummarizedDataSet summarizedDataSet = getDataSetFromFile(DATA_FILE_LOC);
     pointDataSet = dataSetToPoints(summarizedDataSet,
         PLOT_WIDTH, PLOT_HEIGHT);
+    populationDichotomySet = dataSetToDichotomySeriesSet(summarizedDataSet);
+    maxClassesInSeries = getMaxClassesInSeriesSet(populationDichotomySet);
+
     sparklines = prepareSparklines(pointDataSet);
+    dichotomyGraphs = prepareDichotomyGraphs(populationDichotomySet,
+        maxClassesInSeries);
+
     frameRate(30);
 }
 
 void draw()
 {
+    if(!redrawRequired)
+        return;
+
     // Clear
     noStroke();
     fill(#FFFFFF);
     rectMode(CORNERS);
     rect(0, 0, WIDTH, HEIGHT);
 
+    // Labels
+    PFont labelFont = loadFont("Helvetica-12.vlw");
+    fill(#000000);
+    textFont(labelFont, 10);
+    textAlign(LEFT);
+
+    // Metric labels
+    pushMatrix();
+    translate(SPARKLINE_HORIZ_PADDING*2 + PLOT_WIDTH, 12);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Course Overall", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Inst. Overall", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Prior Interest", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Inst. Effectiv.", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Inst. Avail.", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Challenge", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Amt Learned", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Inst. Respect", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Min Hrs / Week", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Avg Hrs / Week", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    text("Max Hrs / Week", 18, 0);
+    translate(SPARKLINE_HORIZ_PADDING, 0);
+    translate(PLOT_WIDTH, 0);
+
+    popMatrix();
+
+    // Leave room for labels
+    pushMatrix();
+    translate(0, 14);
+
+    // Category labels
+    textFont(labelFont, 12);
+    pushMatrix();
+    translate(0, 14);
+
+    text("General", 0, 0);
+    translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+
+    text("AI/HCC", 0, 0);
+    translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+
+    text("OS/Hard.", 0, 0);
+    translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+
+    text("Theory", 0, 0);
+    translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+
+    text("Languages", 0, 0);
+    translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+
+    text("Numerical", 0, 0);
+    translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+
+    text("Databases", 0, 0);
+    translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+    popMatrix();
+
+    // Draw dichotomies
+    pushMatrix();
+    translate(50, 30);
+    textFont(labelFont, 10);
+    for(DichotomyGraph graph : dichotomyGraphs)
+    {
+        graph.draw(selectedSemID);
+        translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+    }
+    popMatrix();
+
     // Sparklines
     pushMatrix();
+    translate(100, 0);
     for(Integer category : sparklines.keySet())
     {
         List<Sparkline> categorySparklines = sparklines.get(category);
@@ -135,7 +281,7 @@ void draw()
         for(Sparkline sparkline : categorySparklines)
         {
             translate(SPARKLINE_HORIZ_PADDING, 0);
-            sparkline.draw();
+            sparkline.draw(selectedSemID);
             translate(SPARKLINE_HORIZ_PADDING, 0);
             translate(PLOT_WIDTH, 0);
         }
@@ -144,4 +290,26 @@ void draw()
         translate(0, CATEGORY_VERT_PADDING);
     }
     popMatrix();
+
+    popMatrix();
+
+    redrawRequired = false;
+}
+
+void keyPressed()
+{
+    if(key != CODED)
+        return;
+
+    if (keyCode == LEFT)
+    {
+        if(selectedSemID > MIN_SEMESTER_ID)
+            selectedSemID--;
+    }
+    else if(keyCode == RIGHT)
+    {  
+        if(selectedSemID < MAX_SEMESTER_ID)
+            selectedSemID++;
+    }
+    redrawRequired = true;
 }
