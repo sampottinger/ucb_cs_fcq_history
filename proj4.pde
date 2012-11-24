@@ -2,9 +2,9 @@ final String DATA_FILE_LOC = "cs_fcq.csv";
 final int PLOT_WIDTH = 60;
 final int SPARKLINE_HORIZ_PADDING = 10;
 final int PLOT_HEIGHT = 60;
-final int CATEGORY_VERT_PADDING = 10;
+final int CATEGORY_VERT_PADDING = 17;
 final int WIDTH = 1200;
-final int HEIGHT = 570;
+final int HEIGHT = 680;
 
 List<CourseRecord> courseRecords;
 
@@ -248,7 +248,7 @@ void draw()
     translate(0, 14);
 
     // Category labels
-    textFont(labelFont, 12);
+    textFont(labelFont, 13);
     pushMatrix();
     translate(0, 14);
 
@@ -282,7 +282,7 @@ void draw()
         DichotomyGraph graph = dichotomyGraphs.get(i);
         MetricDisplay metricDisplay = metricDisplays.get(i);
 
-        textFont(labelFont, 8);
+        textFont(labelFont, 9);
         metricDisplay.draw(selectedSemID);
         translate(240, 25);
         textFont(labelFont, 10);

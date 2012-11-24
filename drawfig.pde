@@ -154,7 +154,7 @@ class MetricDisplay
 
         pushMatrix();
         
-        translate(0, 23);
+        translate(0, 22);
         firstQuartileDist = firstQuartileRecord.getCourseOverall() *
             generalConversionFactor;
         secondQuartileDist = secondQuartileRecord.getCourseOverall() *
@@ -163,15 +163,15 @@ class MetricDisplay
             generalConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Course Overall (%.1f)",
             secondQuartileRecord.getCourseOverall()), 0, 0);
         
-        translate(0, 10);
+        translate(0, 12);
         firstQuartileDist = firstQuartileRecord.getInstructorOverall() *
             generalConversionFactor;
         secondQuartileDist = secondQuartileRecord.getInstructorOverall() *
@@ -180,15 +180,15 @@ class MetricDisplay
             generalConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Inst. Overall (%.1f)",
             secondQuartileRecord.getInstructorOverall()), 0, 0);
         
-        translate(0, 10);
+        translate(0, 12);
         firstQuartileDist = firstQuartileRecord.getPriorInterest() *
             generalConversionFactor;
         secondQuartileDist = secondQuartileRecord.getPriorInterest() *
@@ -197,15 +197,15 @@ class MetricDisplay
             generalConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Prior Interest (%.1f)",
             secondQuartileRecord.getPriorInterest()), 0, 0);
         
-        translate(0, 10);
+        translate(0, 12);
         firstQuartileDist = firstQuartileRecord.getInstructorEffectiveness() *
             generalConversionFactor;
         secondQuartileDist = secondQuartileRecord.getInstructorEffectiveness() *
@@ -214,15 +214,15 @@ class MetricDisplay
             generalConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Inst. Effect. (%.1f)",
             secondQuartileRecord.getInstructorEffectiveness()), 0, 0);
         
-        translate(0, 10);
+        translate(0, 12);
         firstQuartileDist = firstQuartileRecord.getAvailability() *
             generalConversionFactor;
         secondQuartileDist = secondQuartileRecord.getAvailability() *
@@ -231,15 +231,15 @@ class MetricDisplay
             generalConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Inst. Avail. (%.1f)",
             secondQuartileRecord.getAvailability()), 0, 0);
         
-        translate(0, 10);
+        translate(0, 12);
         firstQuartileDist = firstQuartileRecord.getChallenge() *
             generalConversionFactor;
         secondQuartileDist = secondQuartileRecord.getChallenge() *
@@ -248,18 +248,18 @@ class MetricDisplay
             generalConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Challenge (%.1f)",
             secondQuartileRecord.getChallenge()), 0, 0);
         popMatrix();
 
         pushMatrix();
         
-        translate(120, 23);
+        translate(120, 22);
         firstQuartileDist = firstQuartileRecord.getAmountLearned() *
             generalConversionFactor;
         secondQuartileDist = secondQuartileRecord.getAmountLearned() *
@@ -268,15 +268,15 @@ class MetricDisplay
             generalConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Amt. Learned (%.1f)",
             secondQuartileRecord.getAmountLearned()), 0, 0);
         
-        translate(0, 10);
+        translate(0, 12);
         firstQuartileDist = firstQuartileRecord.getInstructorEffectiveness() *
             generalConversionFactor;
         secondQuartileDist = secondQuartileRecord.getInstructorEffectiveness() *
@@ -285,15 +285,15 @@ class MetricDisplay
             generalConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Inst. Respect (%.1f)",
             secondQuartileRecord.getInstructorEffectiveness()), 0, 0);
         
-        translate(0, 10);
+        translate(0, 12);
         firstQuartileDist = firstQuartileRecord.getMinHoursWeek() *
             workConversionFactor;
         secondQuartileDist = secondQuartileRecord.getMinHoursWeek() *
@@ -302,15 +302,15 @@ class MetricDisplay
             workConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Min Hrs / Week (%.1f)",
             secondQuartileRecord.getMinHoursWeek()), 0, 0);
         
-        translate(0, 10);
+        translate(0, 12);
         firstQuartileDist = firstQuartileRecord.getAvgHoursWeek() *
             workConversionFactor;
         secondQuartileDist = secondQuartileRecord.getAvgHoursWeek() *
@@ -319,15 +319,15 @@ class MetricDisplay
             workConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Avg Hrs / Week (%.1f)",
             secondQuartileRecord.getAvgHoursWeek()), 0, 0);
         
-        translate(0, 10);
+        translate(0, 12);
         firstQuartileDist = firstQuartileRecord.getMaxHoursWeek() *
             workConversionFactor;
         secondQuartileDist = secondQuartileRecord.getMaxHoursWeek() *
@@ -336,11 +336,11 @@ class MetricDisplay
             workConversionFactor;
         stroke(#B0B0B0);
         strokeWeight(2);
-        line(0, -3, secondQuartileDist, -3);
-        stroke(#808080);
+        line(0, 2, secondQuartileDist, 2);
+        stroke(#505050);
         strokeWeight(1);
-        line(firstQuartileDist, -2, secondQuartileDist, -2);
-        line(secondQuartileDist, -2, thirdQuartileDist, -2);
+        line(firstQuartileDist, 2, secondQuartileDist, 2);
+        line(secondQuartileDist, 2, thirdQuartileDist, 2);
         text(String.format("Max Hrs / Week (%.1f)",
             secondQuartileRecord.getMaxHoursWeek()), 0, 0);
         popMatrix();
