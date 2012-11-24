@@ -3,7 +3,7 @@ final int PLOT_WIDTH = 60;
 final int SPARKLINE_HORIZ_PADDING = 10;
 final int PLOT_HEIGHT = 60;
 final int CATEGORY_VERT_PADDING = 10;
-final int WIDTH = 1000;
+final int WIDTH = 1200;
 final int HEIGHT = 570;
 
 List<CourseRecord> courseRecords;
@@ -16,6 +16,7 @@ int maxClassesInSeries;
 List<DichotomyGraph> dichotomyGraphs;
 boolean redrawRequired = true;
 int selectedSemID;
+List<MetricDisplay> metricDisplays;
 
 List<Sparkline> prepareSparklinesForCategory(LabeledPointSeriesSet seriesSet)
 {
@@ -133,6 +134,18 @@ List<DichotomyGraph> prepareDichotomyGraphs(
     return retList;
 }
 
+List<MetricDisplay> prepareMetricDisplays(SummarizedDataSet dataSet,
+    int newWidth)
+{
+    List<MetricDisplay> retList = new ArrayList<MetricDisplay>();
+    for(Integer categoryID : dataSet.getCategories())
+    {
+        Map<Integer, CourseSummary> category = dataSet.getCategory(categoryID);
+        retList.add(new MetricDisplay(category, newWidth));
+    }
+    return retList;
+}
+
 void setup()
 {
     size(WIDTH, HEIGHT);
@@ -146,6 +159,8 @@ void setup()
     sparklines = prepareSparklines(pointDataSet);
     dichotomyGraphs = prepareDichotomyGraphs(populationDichotomySet,
         maxClassesInSeries);
+
+    metricDisplays = prepareMetricDisplays(summarizedDataSet, 100);
 
     frameRate(30);
 }
@@ -169,7 +184,7 @@ void draw()
 
     // Metric labels
     pushMatrix();
-    translate(SPARKLINE_HORIZ_PADDING*2 + PLOT_WIDTH, 12);
+    translate(280, 12);
 
     translate(SPARKLINE_HORIZ_PADDING, 0);
     text("Course Overall", 18, 0);
@@ -259,20 +274,27 @@ void draw()
     translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
     popMatrix();
 
-    // Draw dichotomies
+    // High level category info
     pushMatrix();
-    translate(50, 30);
-    textFont(labelFont, 10);
-    for(DichotomyGraph graph : dichotomyGraphs)
+    int numCategories = dichotomyGraphs.size();
+    for(int i=0; i<numCategories; i++)
     {
+        DichotomyGraph graph = dichotomyGraphs.get(i);
+        MetricDisplay metricDisplay = metricDisplays.get(i);
+
+        textFont(labelFont, 8);
+        metricDisplay.draw(selectedSemID);
+        translate(240, 25);
+        textFont(labelFont, 10);
         graph.draw(selectedSemID);
+        translate(-240, -25);
         translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
     }
     popMatrix();
 
     // Sparklines
     pushMatrix();
-    translate(100, 0);
+    translate(300, 0);
     for(Integer category : sparklines.keySet())
     {
         List<Sparkline> categorySparklines = sparklines.get(category);
