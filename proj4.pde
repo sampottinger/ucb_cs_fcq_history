@@ -284,10 +284,10 @@ void draw()
 
         textFont(labelFont, 9);
         metricDisplay.draw(selectedSemID);
-        translate(240, 25);
+        translate(240, 20);
         textFont(labelFont, 10);
         graph.draw(selectedSemID);
-        translate(-240, -25);
+        translate(-240, -20);
         translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
     }
     popMatrix();

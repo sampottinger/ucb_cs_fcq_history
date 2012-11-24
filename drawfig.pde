@@ -27,7 +27,7 @@ class Sparkline
             if(highlightedSemID == semID)
             {
                 noStroke();
-                fill(252, 240, 221);
+                fill(242, 230, 211);
                 rectMode(CORNERS);
                 rect(secondQuartile.x - 1, 0, secondQuartile.x + 1,
                     PLOT_HEIGHT);
@@ -72,6 +72,8 @@ class DichotomyGraph
     public void draw(int highlightedSemID)
     {
         float highlightedVals = 0;
+        float highlightedVal1 = 0;
+        float highlightedVal2 = 0;
 
         // Set color and other display options
         strokeWeight(1);
@@ -92,11 +94,13 @@ class DichotomyGraph
             if(highlightedSemID == semID)
             {
                 noStroke();
-                fill(252, 240, 221);
+                fill(242, 230, 211);
                 rectMode(CORNERS);
                 rect(-2, 0, 2, dispHeight+2);
                 noFill();
 
+                highlightedVal1 = valOne;
+                highlightedVal2 = valTwo;
                 highlightedVals = valOne + valTwo;
             }
 
@@ -106,7 +110,7 @@ class DichotomyGraph
             stroke(#000000);
             line(0, dispHeight, 0, dispHeight - firstValOut);
             
-            stroke(#505050);
+            stroke(#707070);
             line(0, dispHeight - firstValOut, 0,
                 dispHeight - (firstValOut + secondValOut));
             
@@ -114,7 +118,9 @@ class DichotomyGraph
         }
 
         fill(#000000);
-        text(new Integer((int)highlightedVals).toString() + " entries", 0, 42);
+        String caption = String.format("%.0f entries\n%.0f ugrad\n%.0f grad",
+            highlightedVals, highlightedVal1, highlightedVal2);
+        text(caption, 0, 42);
     }
 };
 
