@@ -27,14 +27,14 @@ class Sparkline
             if(highlightedSemID == semID)
             {
                 noStroke();
-                fill(242, 230, 211);
+                fill(#C0C0C0);
                 rectMode(CORNERS);
                 rect(secondQuartile.x - 1, 0, secondQuartile.x + 1,
                     PLOT_HEIGHT);
                 noFill();
             }
 
-            stroke(#707070);
+            stroke(#505050);
             line(firstQuartile.x, firstQuartile.y, secondQuartile.x,
                 secondQuartile.y);
             line(secondQuartile.x, secondQuartile.y, thirdQuartile.x,
@@ -94,7 +94,7 @@ class DichotomyGraph
             if(highlightedSemID == semID)
             {
                 noStroke();
-                fill(242, 230, 211);
+                fill(#E0E0E0);
                 rectMode(CORNERS);
                 rect(-2, 0, 2, dispHeight+2);
                 noFill();
@@ -110,7 +110,7 @@ class DichotomyGraph
             stroke(#000000);
             line(0, dispHeight, 0, dispHeight - firstValOut);
             
-            stroke(#707070);
+            stroke(#757575);
             line(0, dispHeight - firstValOut, 0,
                 dispHeight - (firstValOut + secondValOut));
             
@@ -167,10 +167,10 @@ class MetricDisplay
             generalConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getCourseOverall() *
             generalConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -184,10 +184,10 @@ class MetricDisplay
             generalConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getInstructorOverall() *
             generalConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -201,10 +201,10 @@ class MetricDisplay
             generalConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getPriorInterest() *
             generalConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -218,10 +218,10 @@ class MetricDisplay
             generalConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getInstructorEffectiveness() *
             generalConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -235,10 +235,10 @@ class MetricDisplay
             generalConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getAvailability() *
             generalConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -252,10 +252,10 @@ class MetricDisplay
             generalConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getChallenge() *
             generalConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -272,10 +272,10 @@ class MetricDisplay
             generalConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getAmountLearned() *
             generalConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -289,10 +289,10 @@ class MetricDisplay
             generalConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getInstructorEffectiveness() *
             generalConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -306,10 +306,10 @@ class MetricDisplay
             workConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getMinHoursWeek() *
             workConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -323,10 +323,10 @@ class MetricDisplay
             workConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getAvgHoursWeek() *
             workConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);
@@ -340,10 +340,10 @@ class MetricDisplay
             workConversionFactor;
         thirdQuartileDist = thirdQuartileRecord.getMaxHoursWeek() *
             workConversionFactor;
-        stroke(#B0B0B0);
+        stroke(#808080);
         strokeWeight(2);
         line(0, 2, secondQuartileDist, 2);
-        stroke(#505050);
+        stroke(#404040);
         strokeWeight(1);
         line(firstQuartileDist, 2, secondQuartileDist, 2);
         line(secondQuartileDist, 2, thirdQuartileDist, 2);

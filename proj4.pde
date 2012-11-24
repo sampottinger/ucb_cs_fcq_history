@@ -1,10 +1,10 @@
 final String DATA_FILE_LOC = "cs_fcq.csv";
 final int PLOT_WIDTH = 60;
 final int SPARKLINE_HORIZ_PADDING = 10;
-final int PLOT_HEIGHT = 60;
+final int PLOT_HEIGHT = 44;
 final int CATEGORY_VERT_PADDING = 17;
-final int WIDTH = 1200;
-final int HEIGHT = 680;
+final int WIDTH = 1230;
+final int HEIGHT = 730;
 
 List<CourseRecord> courseRecords;
 
@@ -110,6 +110,10 @@ HashMap<Integer, List<Sparkline>> prepareSparklines(PointDataSet dataSet)
     newSparklines = prepareSparklinesForCategory(curSet);
     sparklines.put(SOFTWARE_ENG_CATEGORY, newSparklines);
 
+    curSet = dataSet.getSeriesSet(GRAPHICS_CATEGORY);
+    newSparklines = prepareSparklinesForCategory(curSet);
+    sparklines.put(GRAPHICS_CATEGORY, newSparklines);
+
     return sparklines;
 }
 
@@ -184,7 +188,7 @@ void draw()
 
     // Metric labels
     pushMatrix();
-    translate(280, 12);
+    translate(300, 22);
 
     translate(SPARKLINE_HORIZ_PADDING, 0);
     text("Course Overall", 18, 0);
@@ -250,32 +254,66 @@ void draw()
     // Category labels
     textFont(labelFont, 13);
     pushMatrix();
-    translate(0, 14);
+    translate(14, PLOT_HEIGHT + 33);
 
+    pushMatrix();
+    rotate(-PI/2.0);
     text("General", 0, 0);
+    popMatrix();
     translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
 
-    text("AI/HCC", 0, 0);
+    pushMatrix();
+    rotate(-PI/2.0);
+    text("AI / HCC", 0, 0);
+    popMatrix();
     translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
 
-    text("OS/Hard.", 0, 0);
+    pushMatrix();
+    rotate(-PI/2.0);
+    text("OS / Hard.", 0, 0);
+    popMatrix();
     translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
 
+    pushMatrix();
+    rotate(-PI/2.0);
     text("Theory", 0, 0);
+    popMatrix();
     translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
 
-    text("Languages", 0, 0);
+    pushMatrix();
+    rotate(-PI/2.0);
+    text("Lang.", 0, 0);
+    popMatrix();
     translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
 
+    pushMatrix();
+    rotate(-PI/2.0);
     text("Numerical", 0, 0);
+    popMatrix();
     translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
 
+    pushMatrix();
+    rotate(-PI/2.0);
     text("Databases", 0, 0);
+    popMatrix();
+    translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+
+    pushMatrix();
+    rotate(-PI/2.0);
+    text("Soft. Eng.", 0, 0);
+    popMatrix();
+    translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
+
+    pushMatrix();
+    rotate(-PI/2.0);
+    text("Graphics", 0, 0);
+    popMatrix();
     translate(0, CATEGORY_VERT_PADDING * 2 + PLOT_HEIGHT);
     popMatrix();
 
     // High level category info
     pushMatrix();
+    translate(20, 0);
     int numCategories = dichotomyGraphs.size();
     for(int i=0; i<numCategories; i++)
     {
@@ -294,7 +332,7 @@ void draw()
 
     // Sparklines
     pushMatrix();
-    translate(300, 0);
+    translate(320, 0);
     for(Integer category : sparklines.keySet())
     {
         List<Sparkline> categorySparklines = sparklines.get(category);
@@ -314,6 +352,36 @@ void draw()
     popMatrix();
 
     popMatrix();
+
+    // Calculate semester
+    int selectedSem = ((int)selectedSemID) % 3;
+    int selectedYear = ((int)(selectedSemID - selectedSem)) / 3;
+    String semStr;
+    switch(selectedSem)
+    {
+        case SPRING_INT:
+            semStr = "Spring";
+            break;
+        case SUMMER_INT:
+            semStr = "Summer";
+            break;
+        case FALL_INT:
+            semStr = "Fall";
+            break;
+        default:
+            semStr = "Other";
+            break;
+    }
+
+    noStroke();
+    fill(242, 230, 211);
+    rectMode(CORNERS);
+    rect(0, 0, 80, 18);
+    textFont(labelFont, 14);
+    fill(#000000);
+    text(String.format("%s %d", semStr, selectedYear), 1, 14);
+
+    text("History of UCB CS FCQ Results", 90, 14);
 
     redrawRequired = false;
 }

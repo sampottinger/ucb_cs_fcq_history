@@ -20,6 +20,7 @@ final int PROGRAMMING_LANGUAGES_CATEGORY = 5;
 final int NUMERICAL_COMP_CATEGORY = 6;
 final int DATABASE_CATEGORY = 7;
 final int SOFTWARE_ENG_CATEGORY = 8;
+final int GRAPHICS_CATEGORY = 9;
 
 // Line parsing constants
 final int CLASS_SEM_INDEX = 0;
