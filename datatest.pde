@@ -1,3 +1,15 @@
+/**
+ * Name: datatest.pde
+ * Auth: Sam Pottinger
+ * Lisc: GPL v2
+ * Desc: Unit tests for the data structures in the UCB CS history visualization
+ *       and transformation operations on those structures.
+**/
+
+/**
+ * Name: testData()
+ * Desc: Runs the unit test suite for data structures.
+**/
 public void testData()
 {
     test_classIDToCategory();
@@ -10,6 +22,10 @@ public void testData()
     test_getNumericalAttr();
 }
 
+/**
+ * Name: test_classIDToCategory()
+ * Desc: Test conversion of course names (CSCI 1300 for ex.) to categories IDs.
+**/
 public void test_classIDToCategory()
 {
     assert classIDToCategory("CSCI 1000") == 0;
@@ -19,6 +35,10 @@ public void test_classIDToCategory()
     assert classIDToCategory("CSCI 3308") == 8;
 }
 
+/**
+ * Name: test_courseRecordFromLine()
+ * Desc: Read a course record from a line from a CSV file.
+**/
 public void test_courseRecordFromLine()
 {
     String testInput = "Spr,11,CSCI 1240,1,\"EISENBERG, MICHAEL\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,COMPUTATIONAL WORLD,4,6,5";
@@ -42,6 +62,14 @@ public void test_courseRecordFromLine()
     assert record.getCourseCategory() == 0;
 }
 
+/**
+ * Name: checkPair(List<CourseRecord> pair, String name1, String name2)
+ * Desc: Checks that two records include the courses of the given names.
+ * Para: pair, The collection of two course records.
+ *       name1, The first name to look for in the given pair.
+ *       name2, The second name to look for in the given pair.
+ * Retr: True if the two names are present and false otherwise.
+**/
 private boolean checkPair(List<CourseRecord> pair, String name1, String name2)
 {
     CourseRecord first = pair.get(0);
@@ -51,6 +79,10 @@ private boolean checkPair(List<CourseRecord> pair, String name1, String name2)
         (first.getName().equals(name2) && second.getName().equals(name1));
 }
 
+/**
+ * Name: test_sortRecordsBySemester()
+ * Desc: Test sorting course records by their individual semester IDs.
+**/
 public void test_sortRecordsBySemester()
 {
     List<CourseRecord> records = new ArrayList<CourseRecord>();
@@ -94,6 +126,10 @@ public void test_sortRecordsBySemester()
     assert checkPair(testList, "SOMETHING 7", "SOMETHING 8");
 }
 
+/**
+ * Name: test_sortRecordsByCategory()
+ * Desc: Test sorting course records by category integer IDs.
+**/
 public void test_sortRecordsByCategory()
 {
     List<CourseRecord> records = new ArrayList<CourseRecord>();
@@ -128,12 +164,20 @@ public void test_sortRecordsByCategory()
     assert checkPair(testList, "SOMETHING 3", "SOMETHING 6");
 }
 
+/**
+ * Name: test_floatIsInteger()
+ * Desc: Test checking if a number is an integer or not.
+**/
 public void test_floatIsInteger()
 {
     assert floatIsInteger(5) == true;
     assert floatIsInteger(5.5) == false;
 }
 
+/**
+ * Name: test_getValueInDistribution()
+ * Desc: Test calculation of percentiles.
+**/
 public void test_getValueInDistribution()
 {
     ArrayList<Float> testList1 = new ArrayList<Float>();
@@ -152,6 +196,10 @@ public void test_getValueInDistribution()
     assert getValueInDistribution(testList2, 2.5) == 6.5;
 }
 
+/**
+ * Name: test_getDistribution()
+ * Desc: Test calculation of first, second, and third quartiles.
+**/
 public void test_getDistribution()
 {
     ArrayList<Float> testList = new ArrayList<Float>();
@@ -174,6 +222,10 @@ public void test_getDistribution()
     assert distribution.getThirdQuartile() == 10;
 }
 
+/**
+ * Name: test_getRecordValues()
+ * Desc: Test reading a set of numerical values denoted by integer field IDs.
+**/
 public void test_getRecordValues()
 {
     List<CourseRecord> records = new ArrayList<CourseRecord>();
@@ -207,6 +259,10 @@ public void test_getRecordValues()
     assert overallScores.get(5) == 5.6;
 }
 
+/**
+ * Name: test_getNumericalAttr()
+ * Desc: Test getting attributes of course records by numerical field IDs.
+**/
 public void test_getNumericalAttr()
 {
     CourseRecord record = courseRecordFromLine("Spr,11,CSCI 1240,1,\"INST, LAST\",TTT,33,26,4.8,5.4,4.3,5,5,4.1,4.3,5.9,SOMETHING 1,4,6,5");

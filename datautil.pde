@@ -1,3 +1,11 @@
+/**
+ * Name: datautil.pde
+ * Auth: Sam Pottinger
+ * Lisc: GPL v2
+ * Desc: Functions with logic for performing transformations between data
+ *       structures.
+**/
+
 // Semester mapping
 final int SPRING_INT = 0;
 final int SUMMER_INT = 1;
@@ -45,7 +53,10 @@ final int MIN_HOURS_WEEK_INDEX = 18;
 final int AVG_HOURS_WEEK_INDEX = 20;
 final int MAX_HOURS_WEEK_INDEX = 19;
 
-// Data support
+/**
+ * Name: semesterStrToInt(String name)
+ * Desc: Get the integer ID of a semester without its year/
+**/
 int semesterStrToInt(String name)
 {
     if(name.equals(SPRING_STR))
@@ -58,16 +69,31 @@ int semesterStrToInt(String name)
         return UNKNOWN_SEMESTER_INT;
 }
 
+/**
+ * Name: semesterAndYearToSemesterID(int targetYear, int targetSemester)
+ * Desc: Get a unqiue numerical ID of a semester.
+**/
 int semesterAndYearToSemesterID(int targetYear, int targetSemester)
 {
     return targetYear * NUM_SEMESTERS + targetSemester;
 }
 
+/**
+ * Name: classIDToCategory(String classID)
+ * Desc: Get the integer ID of the category of a class given its short name
+ * Para: classID, the ID of the course to get a class ID for (classID = CSCI
+ *       1300 for example).
+**/
 int classIDToCategory(String classID)
 {
-    return new Integer(classID.substring(classID.length() - 1, classID.length()));
+    return new Integer(classID.substring(classID.length() - 1,
+        classID.length()));
 }
 
+/**
+ * Name: courseRecordFromLine(String targetLine)
+ * Desc: Read a course record from a line in a CSV file.
+**/
 CourseRecord courseRecordFromLine(String targetLine)
 {
     String[] components = split(targetLine, ",");
@@ -119,7 +145,14 @@ CourseRecord courseRecordFromLine(String targetLine)
     );
 }
 
-Map<Integer, List<CourseRecord>> sortRecordsBySemester(List<CourseRecord> targetList)
+/**
+ * Name: sortRecordsBySemester(List<CourseRecord> targetList)
+ * Desc: Sort a collection of course records into a mapping between semester and
+ *       courses.
+ * Para: targetList, The reocrds to sort.
+**/
+Map<Integer, List<CourseRecord>> sortRecordsBySemester(
+    List<CourseRecord> targetList)
 {
     Map<Integer, List<CourseRecord>> retMap =
         new HashMap<Integer, List<CourseRecord>>();
@@ -138,7 +171,13 @@ Map<Integer, List<CourseRecord>> sortRecordsBySemester(List<CourseRecord> target
     return retMap;
 }
 
-Map<Integer, List<CourseRecord>> sortRecordsByCategory(List<CourseRecord> targetList)
+/**
+ * Name: sortRecordsByCategory(List<CourseRecord> targetList)
+ * Desc: Sort course records into a mapping between category and courses.
+ * Para: targetList, The collection of course records to sort.
+**/
+Map<Integer, List<CourseRecord>> sortRecordsByCategory(
+    List<CourseRecord> targetList)
 {
     Map<Integer, List<CourseRecord>> retMap =
         new HashMap<Integer, List<CourseRecord>>();
@@ -157,11 +196,25 @@ Map<Integer, List<CourseRecord>> sortRecordsByCategory(List<CourseRecord> target
     return retMap;
 }
 
+/**
+ * Name: floatIsInteger(float target)
+ * Desc: Determine if a floating point number is a whole number or not.
+ * Retr: True if it is a whole number and false otherwise.
+**/ 
 boolean floatIsInteger(float target)
 {
     return target == Math.floor(target);
 }
 
+/**
+ * Name: safeGet(List<Float> target, int index)
+ * Desc: Get a value from the given list, forcing the index within range. If the
+ *       provided index is larger than the size of the list, return the last
+ *       element and, if the index is less than zero, the first element is
+ *       returned.
+ * Para: target, The list to get a value from.
+ *       index, The index of the element to get.
+**/
 float safeGet(List<Float> target, int index)
 {
     if(index < 0)
@@ -171,6 +224,13 @@ float safeGet(List<Float> target, int index)
     return target.get(index);
 }
 
+/**
+ * Name: getValueInDistribution(List<Float> target, float index)
+ * Desc: Get the element at the index closest to the provided index.
+ * Para: index, The index of the element to get, getting the element with the
+ *          nearest available index to the provided one.
+ * Retr: The element with the closest available index to the one provided.
+**/
 float getValueInDistribution(List<Float> target, float index)
 {
     if(floatIsInteger(index))
@@ -178,11 +238,18 @@ float getValueInDistribution(List<Float> target, float index)
     else
     {
         int closestIndex = (int)Math.floor(index);
-        float m = safeGet(target, closestIndex + 1) - safeGet(target, closestIndex);
+        float m = safeGet(target, closestIndex + 1) -
+            safeGet(target, closestIndex);
         return m * (index - closestIndex) + safeGet(target, closestIndex);
     }
 }
 
+/**
+ * Name: getDistribution(List<Float> target)
+ * Desc: Get the first, second, and third quartiles from the given collection of
+ *       floats.
+ * Retr: Distribution containing element quartiles.
+**/
 Distribution getDistribution(List<Float> target)
 {
     Collections.sort(target);
@@ -202,6 +269,14 @@ Distribution getDistribution(List<Float> target)
     );
 }
 
+/**
+ * Name: getRecordValues(List<CourseRecord> targetList, int attrID)
+ * Desc: Get the values of an attribute across a collection of course records.
+ * Para: targetList, The collection of course records to pull the attribute
+ *          from.
+ *       attrID, the unique numerical ID of the field to read across all of the
+ *          provided course records.
+**/
 List<Float> getRecordValues(List<CourseRecord> targetList, int attrID)
 {
     List<Float> retList = new ArrayList<Float>(targetList.size());
@@ -210,6 +285,21 @@ List<Float> getRecordValues(List<CourseRecord> targetList, int attrID)
     return retList;
 }
 
+// TODO: Assigning distribution information to CourseRecords seems really
+//       kludgy.
+/**
+ * Name: getCourseSummary(List<CourseRecord> target, int semesterID,
+ *          String instructor, int courseCategory)
+ * Desc: Summarize a collection of course records values, getting distributions
+ *          for all of the fields of the course records in the given collection.
+ * Para: target, The collection of course records to get distributions from.
+ *       semesterID, The semester IDs to assign to the course records that will
+ *          contain distribution information (quartiles).
+ *       instructor, The instructor to assign to the course records that will
+ *          contain distribution information (quartiles).
+ *       courseCategory, The category to assign to the course records that will
+ *          contain distribution informaiton (quartiles).
+**/
 CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
     String instructor, int courseCategory)
 {
@@ -344,6 +434,13 @@ CourseSummary getCourseSummary(List<CourseRecord> target, int semesterID,
         numUgrad, numGrad);
 }
 
+/**
+ * Name: summarizeSemesters(Map<Integer, List<CourseRecord>> coursesBySemester)
+ * Desc: Sort courses from a set of semesters into categories with semester
+ *       to course mappings.
+ * Para: coursesBySemester, The mapping of semester IDs to collections of
+ *          course records to sort.
+**/
 SummarizedDataSet summarizeSemesters(
     Map<Integer, List<CourseRecord>> coursesBySemester)
 {
@@ -370,6 +467,10 @@ SummarizedDataSet summarizeSemesters(
     return dataSet;
 }
 
+/**
+ * Name: getRecordsFromLines(String[] lines)
+ * Desc: Get CourseRecords from CSV lines.
+**/
 List<CourseRecord> getRecordsFromLines(String[] lines)
 {
     ArrayList<CourseRecord> retList = new ArrayList<CourseRecord>();
@@ -379,11 +480,19 @@ List<CourseRecord> getRecordsFromLines(String[] lines)
     return retList;
 }
 
+/**
+ * Name: getRecordsFromFile(String loc)
+ * Desc: Load course records from a CSV file.
+**/
 List<CourseRecord> getRecordsFromFile(String loc)
 {
     return getRecordsFromLines(loadStrings(loc));
 }
 
+/**
+ * Name: getDataSetFromFile(String loc)
+ * Desc: Load a summarized data set from a file.
+**/
 SummarizedDataSet getDataSetFromFile(String loc)
 {
     List<CourseRecord> records = getRecordsFromFile(loc);

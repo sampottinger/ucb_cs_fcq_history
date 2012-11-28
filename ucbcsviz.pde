@@ -1,3 +1,13 @@
+/**
+ * Name: ucbcsviz.pde
+ * Auth: Sam Pottinger
+ * Lisc: GPL v2
+ * Desc: Driver for visualization of history of the Department of Computer
+ *       Science from the University of Colorado at Boulder through the lens
+ *       of FCQ survey results.
+**/
+
+// Presentation and data location constants
 final String DATA_FILE_LOC = "cs_fcq.csv";
 final int PLOT_WIDTH = 60;
 final int SPARKLINE_HORIZ_PADDING = 10;
@@ -18,6 +28,13 @@ boolean redrawRequired = true;
 int selectedSemID;
 List<MetricDisplay> metricDisplays;
 
+/**
+ * Name: prepareSparklinesForCategory(LabeledPointSeriesSet seriesSet)
+ * Desc: Create sparklines for category of courses.
+ * Para: seriesSet, The set of points to create sparklines for.
+ * Retr: List of sparklines cooresponding to each field represented in the
+ *       underlying data set.
+**/
 List<Sparkline> prepareSparklinesForCategory(LabeledPointSeriesSet seriesSet)
 {
     List<Sparkline> sparklines = new ArrayList<Sparkline>();
@@ -71,6 +88,13 @@ List<Sparkline> prepareSparklinesForCategory(LabeledPointSeriesSet seriesSet)
     return sparklines;
 }
 
+/**
+ * Name: prepareSparklines(PointDataSet dataSet)
+ * Desc: Create sparklines for a set of categories.
+ * Para: dataSet, The data set to create sparklines for.
+ * Retr: Mapping from semester ID to list of sparklines for that category's
+ *       values.
+**/
 HashMap<Integer, List<Sparkline>> prepareSparklines(PointDataSet dataSet)
 {
     HashMap<Integer, List<Sparkline>> sparklines =
@@ -117,6 +141,16 @@ HashMap<Integer, List<Sparkline>> prepareSparklines(PointDataSet dataSet)
     return sparklines;
 }
 
+/**
+ * Name: prepareDichotomyGraphs(
+ *          LabeledDichotomySeriesSet populationDichotomySet,
+ *          int maxClassesInSeries)
+ * Desc: Create dichotomy graphs to show number of graduate v undergraduate
+ *       courses for a category of courses.
+ * Para: populationDichotomySet, The dichotomy set for a category of courses.
+ *       maxClassesInSeries, The maximum number of classes in the provided
+ *          series.
+**/
 List<DichotomyGraph> prepareDichotomyGraphs(
     LabeledDichotomySeriesSet populationDichotomySet, int maxClassesInSeries)
 {
@@ -138,6 +172,14 @@ List<DichotomyGraph> prepareDichotomyGraphs(
     return retList;
 }
 
+/**
+ * Name: prepareMetricDisplays(SummarizedDataSet dataSet,
+ *          int newWidth)
+ * Desc: Create metric displays for a data set.
+ * Para: dataSet, the data set to create metric displays for.
+ *       newWidth, The width of target display in pixels (to calculate
+ *          coordinates).
+**/
 List<MetricDisplay> prepareMetricDisplays(SummarizedDataSet dataSet,
     int newWidth)
 {
@@ -150,9 +192,15 @@ List<MetricDisplay> prepareMetricDisplays(SummarizedDataSet dataSet,
     return retList;
 }
 
+/**
+ * Name: setup()
+ * Desc: Load data set, create visual structures, and adjust visual properties.
+**/
 void setup()
 {
     size(WIDTH, HEIGHT);
+
+    // Load data
     selectedSemID = MIN_SEMESTER_ID;
     SummarizedDataSet summarizedDataSet = getDataSetFromFile(DATA_FILE_LOC);
     pointDataSet = dataSetToPoints(summarizedDataSet,
@@ -160,15 +208,22 @@ void setup()
     populationDichotomySet = dataSetToDichotomySeriesSet(summarizedDataSet);
     maxClassesInSeries = getMaxClassesInSeriesSet(populationDichotomySet);
 
+    // Create summarizing visual structures
     sparklines = prepareSparklines(pointDataSet);
     dichotomyGraphs = prepareDichotomyGraphs(populationDichotomySet,
         maxClassesInSeries);
 
+    // Create individual metric displays
     metricDisplays = prepareMetricDisplays(summarizedDataSet, 100);
 
+    // Turn down framerate
     frameRate(30);
 }
 
+/**
+ * Name: draw()
+ * Desc: Draw all the visual structures and respond to user feedback.
+**/
 void draw()
 {
     if(!redrawRequired)
@@ -386,6 +441,10 @@ void draw()
     redrawRequired = false;
 }
 
+/**
+ * Name: keyPressed()
+ * Desc: Listen for user's key presses indicating movement between semesters.
+**/
 void keyPressed()
 {
     if(key != CODED)

@@ -1,12 +1,37 @@
+/**
+ * Name: drawfig.pde
+ * Auth: Sam Pottinger
+ * Lisc: GPL v2
+ * Desc: Classes that assist in drawing dataset features.
+**/
+
+// TODO: These var names should not be specific to this visualization.
+
+/**
+ * Name: Sparkline
+ * Desc: Modified Tuftian sparkline that shows distribution information with
+ *       quartiles.
+**/
 class Sparkline
 {
     private PointSeries series;
 
+    /**
+     * Name: Sparkline(PointSeries newSeries)
+     * Desc: Create a new sparkline for point series
+     * Para: newSeries, The point series to create a sparkline for.
+    **/
     public Sparkline(PointSeries newSeries)
     {
         series = newSeries;
     }
 
+    /**
+     * Name: draw(int highlightedSemID)
+     * Desc: Draw the sparkline starting at 0,0
+     * Para: highlightedSemID, The id of the semeseter which should be
+     *          highlighted in the graphic.
+    **/
     public void draw(int highlightedSemID)
     {
         // Set display options
@@ -32,9 +57,12 @@ class Sparkline
                 rect(secondQuartile.x - 1, 0, secondQuartile.x + 1,
                     PLOT_HEIGHT);
                 noFill();
-            }
 
-            stroke(#505050);
+                stroke(#505050);
+            }
+            else
+                stroke(#707070);
+
             line(firstQuartile.x, firstQuartile.y, secondQuartile.x,
                 secondQuartile.y);
             line(secondQuartile.x, secondQuartile.y, thirdQuartile.x,
@@ -46,6 +74,11 @@ class Sparkline
     }
 };
 
+/**
+ * Name: DichotomyGraph
+ * Desc: Slightly modified hairthin bargraph showing two categories and their
+ *       sum.
+**/
 class DichotomyGraph
 {
     private DichotomySeries dichotomySeries;
@@ -56,6 +89,18 @@ class DichotomyGraph
     private float semConversionFactor;
     private int total;
 
+    /**
+     * Name: DichotomyGraph(DichotomySeries newSeries, int newMaxClasses,
+     *          int newHeight, int newMinSemesterID, int newMaxSemesterID,
+     *          int dispWidth)
+     * Desc: Create a new dichotomy graph for the given series.
+     * Para: newSeries, The series to create a dichotomy graph for.
+     *       newMaxClasses, Set max classes (max sum of categories in series).
+     *       newHeight, The height of the graph.
+     *       newMinSemesterID, The id of the starting semester for the series.
+     *       newMaxSemesterID, The id of the ending semester for the series.
+     *       dispWidth, The width for the span of the graphics.
+    **/
     public DichotomyGraph(DichotomySeries newSeries, int newMaxClasses,
         int newHeight, int newMinSemesterID, int newMaxSemesterID,
         int dispWidth)
@@ -69,6 +114,12 @@ class DichotomyGraph
         dispHeight = newHeight;
     }
 
+    /**
+     * Name: draw(int highlightedSemID)
+     * Desc: Draws the graph with one of the sections of the series highlighted.
+     * Para: highlighedSemID, The ID of the semester to highlight in the bar
+     *          graph.
+    **/ 
     public void draw(int highlightedSemID)
     {
         float highlightedVals = 0;
@@ -107,10 +158,10 @@ class DichotomyGraph
             float firstValOut = classConversionFactor * valOne;
             float secondValOut = classConversionFactor * valTwo;
             
-            stroke(#000000);
+            stroke(#00A000);
             line(0, dispHeight, 0, dispHeight - firstValOut);
             
-            stroke(#757575);
+            stroke(#0000C0);
             line(0, dispHeight - firstValOut, 0,
                 dispHeight - (firstValOut + secondValOut));
             
@@ -124,6 +175,11 @@ class DichotomyGraph
     }
 };
 
+/**
+ * Name: MetricDisplay
+ * Desc: A visualization-specific display showing individual metric values for
+ *       a semester
+**/
 class MetricDisplay
 {
     private Map<Integer, CourseSummary> category;
@@ -131,6 +187,15 @@ class MetricDisplay
     private float generalConversionFactor;
     private float workConversionFactor;
 
+    /**
+     * Name: MetricDisplay(Map<Integer, CourseSummary> newCategory,
+     *       int newDisplayWidth)
+     * Desc: Creates a new metric display for a category full of course 
+     *       summaries.
+     * Para: newCategory, Mapping of semesters to course records to make a
+     *          metric display for.
+     *       newDisplayWidth, The width of this display in pixels.
+    **/
     public MetricDisplay(Map<Integer, CourseSummary> newCategory,
         int newDisplayWidth)
     {
@@ -140,6 +205,11 @@ class MetricDisplay
         workConversionFactor = newDisplayWidth / 18.0;
     }
 
+    /**
+     * Name: draw(int highlightedSemID)
+     * Desc: Draw this figure at 0, 0
+     * Para: highlightedSemID, The ID of the semester to display the values for.
+    **/
     public void draw(int highlightedSemID)
     {
         float firstQuartileDist;
