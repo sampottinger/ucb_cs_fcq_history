@@ -1,9 +1,5 @@
 h2. UCB CS FCQ History Visualization
-This visualization shows a history of courses offered by the "Department of
-Computer Science":http://www.colorado.edu/cs/ at the "University of
-Colorado at Boulder":http://www.colorado.edu/ along with
-"FCQ":http://www.colorado.edu/pba/fcq/ results, indicating scores awarded
-by students for:
+This visualization shows a history of courses offered by the "Department of Computer Science":http://www.colorado.edu/cs/ at the "University of Colorado at Boulder":http://www.colorado.edu/ along with "FCQ":http://www.colorado.edu/pba/fcq/ results, indicating scores awarded by students for
 * course overall raiting
 * instructor overall raiting
 * prior interest
@@ -15,16 +11,13 @@ by students for:
 * min hours of work per week
 * avg hours of work per week
 * max hours of work per week
-by course category (general, AI / HCC, OS / systems, theory of computation,
-programming languages, numercial computation, databases, software
-engineering, and graphics).
+by course category (general, AI / HCC, OS / systems, theory of computation, programming languages, numercial computation, databases, software engineering, and graphics).
 
 h2. Controls
 Use the left and right arrow keys to move between semesters.
 
 h2. Scope and Limitations
-The visualization starts with the recently revised FCQ structure in fall of
-2006 and goes to the spring of 2012.
+The visualization starts with the recently revised FCQ structure in fall of 2006 and goes to the spring of 2012.
 
 h2. License
 This work is released under the GNU GPL v2 license. See LICENSE.txt for details.
