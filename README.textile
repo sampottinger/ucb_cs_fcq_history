@@ -1,3 +1,5 @@
+*Executables available at* "http://gleap.org/content/ucbcs_fcq_history":http://gleap.org/content/ucbcs_fcq_history
+
 h2. UCB CS FCQ History Visualization
 
 This visualization shows a history of courses offered by the "Department of Computer Science":http://www.colorado.edu/cs/ at the "University of Colorado at Boulder":http://www.colorado.edu/ along with "FCQ":http://www.colorado.edu/pba/fcq/ results, indicating scores awarded by students for
